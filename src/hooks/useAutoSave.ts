@@ -4,7 +4,7 @@ import { FormAutoSaveState } from '@/types/wizard';
 
 const STORAGE_KEY = 'lendswift_application_draft';
 
-export function useAutoSave<T extends Record<string, unknown>>(
+export function useAutoSave<T extends object>(
   data: T,
   options: {
     debounceMs?: number;

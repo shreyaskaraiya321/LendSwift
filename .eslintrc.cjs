@@ -109,6 +109,7 @@ module.exports = {
     'node_modules',
     '*.config.js',
     '*.config.cjs',
+    '*.d.ts',
     'vite.config.ts',
     '.eslintrc.cjs',
   ],

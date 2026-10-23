@@ -185,36 +185,42 @@ export const step5Schema = z.object({
 });
 
 /**
- * Step 6: Bank Account & Disbursal Schema
+ * Step 6: Bank Account & Disbursal Base Schema
  */
-export const step6Schema = z
-  .object({
-    bankAccountNumber: z
-      .string({ required_error: 'Bank account number is required' })
-      .trim()
-      .min(9, 'Bank account must be between 9 and 18 digits')
-      .max(18, 'Bank account cannot exceed 18 digits')
-      .regex(/^\d+$/, 'Account number must contain only numbers'),
-    confirmBankAccountNumber: z
-      .string({ required_error: 'Please confirm bank account number' })
-      .trim(),
-    ifscCode: ifscSchema,
-    bankName: z.string().min(2, 'Bank name is required'),
-    branchName: z.string().min(2, 'Branch name is required'),
-    accountType: z.enum(['savings', 'current'], {
-      required_error: 'Select account type',
-    }),
-    accountHolderName: z
-      .string({ required_error: 'Account holder name is required' })
-      .min(3, 'Name must match PAN card name'),
-    eNachAutoDebitConsent: z.boolean().refine((val) => val === true, {
-      message: 'e-NACH / Auto-Debit mandate setup consent is required for loan disbursal',
-    }),
-  })
-  .refine((data) => data.bankAccountNumber === data.confirmBankAccountNumber, {
+export const step6BaseSchema = z.object({
+  bankAccountNumber: z
+    .string({ required_error: 'Bank account number is required' })
+    .trim()
+    .min(9, 'Bank account must be between 9 and 18 digits')
+    .max(18, 'Bank account cannot exceed 18 digits')
+    .regex(/^\d+$/, 'Account number must contain only numbers'),
+  confirmBankAccountNumber: z
+    .string({ required_error: 'Please confirm bank account number' })
+    .trim(),
+  ifscCode: ifscSchema,
+  bankName: z.string().min(2, 'Bank name is required'),
+  branchName: z.string().min(2, 'Branch name is required'),
+  accountType: z.enum(['savings', 'current'], {
+    required_error: 'Select account type',
+  }),
+  accountHolderName: z
+    .string({ required_error: 'Account holder name is required' })
+    .min(3, 'Name must match PAN card name'),
+  eNachAutoDebitConsent: z.boolean().refine((val) => val === true, {
+    message: 'e-NACH / Auto-Debit mandate setup consent is required for loan disbursal',
+  }),
+});
+
+/**
+ * Step 6: With confirmation matching refinement
+ */
+export const step6Schema = step6BaseSchema.refine(
+  (data) => data.bankAccountNumber === data.confirmBankAccountNumber,
+  {
     message: 'Bank account numbers do not match',
     path: ['confirmBankAccountNumber'],
-  });
+  }
+);
 
 /**
  * Step 7: Document Upload Verification Schema
@@ -261,6 +267,10 @@ export const loanApplicationSchema = step1Schema
   .merge(step3Schema)
   .merge(step4Schema)
   .merge(step5Schema)
-  .merge(step6Schema)
+  .merge(step6BaseSchema)
   .merge(step7Schema)
-  .merge(step8Schema);
+  .merge(step8Schema)
+  .refine((data) => data.bankAccountNumber === data.confirmBankAccountNumber, {
+    message: 'Bank account numbers do not match',
+    path: ['confirmBankAccountNumber'],
+  });
