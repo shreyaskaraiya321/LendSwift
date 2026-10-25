@@ -55,12 +55,34 @@ export interface LoanApplicationData {
   alternateMobile?: string;
   panNumber: string;
 
-  // Step 2: Identity & KYC
+  // Step 3: Statutory KYC & Identity Documents
   aadhaarNumber: string;
   isAadhaarVerified: boolean;
-  digiLockerConsent: boolean;
-  ckycConsent: boolean;
+  aadhaarConsent?: boolean;
+  digiLockerConsent?: boolean;
+  ckycConsent?: boolean;
+  voterId?: string;
+  passportNumber?: string;
+  isPanVerified?: boolean;
+  panVerificationError?: string;
+  aadhaarVerificationError?: string;
   panCardHolderName?: string;
+
+  // Step 4: Residential Address & Verification
+  currentAddressLine1?: string;
+  currentAddressLine2?: string;
+  pincode?: string;
+  city?: string;
+  state?: string;
+  yearsAtAddress?: number;
+  monthlyRentAmount?: number;
+  previousAddressLine?: string;
+  sameAsPermanent?: boolean;
+  permanentAddressLine1?: string;
+  permanentAddressLine2?: string;
+  permanentPincode?: string;
+  permanentCity?: string;
+  permanentState?: string;
 
   // Step 3: Employment & Income
   employmentType: EmploymentType;
