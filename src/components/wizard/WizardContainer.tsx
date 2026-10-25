@@ -10,8 +10,8 @@ import {
   Step1LoanType,
   Step2PersonalInfo,
   Step3EmploymentIncome,
-  Step4LoanRequirement,
-  Step5AddressDetails,
+  Step3KYC,
+  Step4Address,
   Step6BankVerification,
   Step7DocumentUpload,
   Step8ReviewConsent,
@@ -50,7 +50,26 @@ const DEFAULT_FORM_VALUES: Partial<LoanApplicationData> = {
   alternateMobile: '',
   panNumber: '',
   aadhaarNumber: '',
+  aadhaarConsent: false,
+  voterId: '',
+  passportNumber: '',
+  isPanVerified: false,
   isAadhaarVerified: false,
+  currentAddressLine1: '',
+  currentAddressLine2: '',
+  pincode: '',
+  city: '',
+  state: '',
+  residenceType: 'Owned',
+  yearsAtAddress: 3,
+  monthlyRentAmount: undefined,
+  previousAddressLine: '',
+  sameAsPermanent: true,
+  permanentAddressLine1: '',
+  permanentAddressLine2: '',
+  permanentPincode: '',
+  permanentCity: '',
+  permanentState: '',
   digiLockerConsent: false,
   ckycConsent: false,
   employmentType: 'salaried',
@@ -157,6 +176,29 @@ export function WizardContainer() {
     if (!isStepValid) {
       setIsSubmitting(false);
       return;
+    }
+
+    // Step 3 Gating: Both PAN and Aadhaar must pass verification before navigating to Step 4
+    if (currentStep === 3) {
+      const isPanVerified = Boolean(getValues('isPanVerified'));
+      const isAadhaarVerified = Boolean(getValues('isAadhaarVerified'));
+
+      if (!isPanVerified || !isAadhaarVerified) {
+        if (!isPanVerified) {
+          methods.setError('panNumber', {
+            type: 'manual',
+            message: 'PAN verification is mandatory before proceeding to Step 4',
+          });
+        }
+        if (!isAadhaarVerified) {
+          methods.setError('aadhaarNumber', {
+            type: 'manual',
+            message: 'Aadhaar Verhoeff validation is mandatory before proceeding to Step 4',
+          });
+        }
+        setIsSubmitting(false);
+        return;
+      }
     }
 
     setCompletedSteps((prev) => new Set(prev).add(currentStep));
@@ -346,9 +388,9 @@ export function WizardContainer() {
               >
                 {currentStep === 1 && <Step1LoanType />}
                 {currentStep === 2 && <Step2PersonalInfo />}
-                {currentStep === 3 && <Step3EmploymentIncome onNext={handleNextStep} onPrevious={handlePreviousStep} />}
-                {currentStep === 4 && <Step4LoanRequirement onNext={handleNextStep} onPrevious={handlePreviousStep} />}
-                {currentStep === 5 && <Step5AddressDetails onNext={handleNextStep} onPrevious={handlePreviousStep} />}
+                {currentStep === 3 && <Step3KYC />}
+                {currentStep === 4 && <Step4Address />}
+                {currentStep === 5 && <Step3EmploymentIncome onNext={handleNextStep} onPrevious={handlePreviousStep} />}
                 {currentStep === 6 && <Step6BankVerification onNext={handleNextStep} onPrevious={handlePreviousStep} />}
                 {currentStep === 7 && <Step7DocumentUpload onNext={handleNextStep} onPrevious={handlePreviousStep} />}
                 {currentStep === 8 && <Step8ReviewConsent onNext={handleNextStep} onPrevious={handlePreviousStep} />}

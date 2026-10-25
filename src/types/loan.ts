@@ -74,6 +74,7 @@ export interface LoanApplicationData {
   pincode?: string;
   city?: string;
   state?: string;
+  residenceType?: 'Owned' | 'Rented' | 'Company' | 'Family';
   yearsAtAddress?: number;
   monthlyRentAmount?: number;
   previousAddressLine?: string;

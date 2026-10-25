@@ -7,6 +7,8 @@ import { ifscSchema } from './ifscSchema';
 import { panSchema } from './panSchema';
 import { step1BaseSchema } from './step1Schema';
 import { step2BaseSchema } from './step2Schema';
+import { step3BaseSchema } from './step3Schema';
+import { step4BaseSchema } from './step4Schema';
 
 // Common Indian mobile regex (starts with 6, 7, 8, or 9 and has 10 digits)
 const indianMobileRegex = /^[6-9]\d{9}$/;
@@ -79,9 +81,9 @@ export const step2KycSchema = z.object({
 });
 
 /**
- * Step 3: Employment & Income Schema
+ * Step 3: Employment & Income Schema (Legacy / Sub-schema)
  */
-export const step3Schema = z.object({
+export const step3EmploymentSchema = z.object({
   employmentType: z.enum(['salaried', 'self_employed_professional', 'business_owner'], {
     required_error: 'Please select your employment type',
   }),
@@ -110,9 +112,9 @@ export const step3Schema = z.object({
 });
 
 /**
- * Step 4: Loan Requirement & Terms Schema
+ * Step 4: Loan Requirement & Terms Schema (Legacy / Sub-schema)
  */
-export const step4Schema = z.object({
+export const step4LoanRequirementSchema = z.object({
   loanAmount: z
     .number({ required_error: 'Please choose a loan amount' })
     .min(MIN_LOAN_AMOUNT, `Minimum loan amount is ₹${MIN_LOAN_AMOUNT.toLocaleString('en-IN')}`)
@@ -266,10 +268,12 @@ export const step8Schema = z.object({
  */
 export const loanApplicationSchema = step1BaseSchema
   .merge(step2BaseSchema)
+  .merge(step3BaseSchema)
+  .merge(step4BaseSchema)
   .merge(step1IdentitySchema)
   .merge(step2KycSchema)
-  .merge(step3Schema)
-  .merge(step4Schema)
+  .merge(step3EmploymentSchema)
+  .merge(step4LoanRequirementSchema)
   .merge(step5Schema)
   .merge(step6BaseSchema)
   .merge(step7Schema)

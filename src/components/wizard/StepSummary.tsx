@@ -16,7 +16,7 @@ export function StepSummary({ formData, className = '' }: StepSummaryProps) {
   const interestRate = formData.acceptedInterestRate || BASE_INTEREST_RATE;
   const computedEmi = calculateEmi(loanAmount, interestRate, tenureMonths);
 
-  const isKycComplete = Boolean(formData.panNumber && formData.isAadhaarVerified);
+  const isKycComplete = Boolean(formData.isPanVerified && formData.isAadhaarVerified);
   const isIncomeProvided = Boolean(formData.monthlyNetIncome);
 
   return (

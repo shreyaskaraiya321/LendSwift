@@ -3,8 +3,6 @@ import { z, ZodTypeAny } from 'zod';
 import { StepNumber } from '@/types/wizard';
 
 import {
-  step3Schema,
-  step4Schema,
   step5Schema,
   step6Schema,
   step7Schema,
@@ -12,6 +10,8 @@ import {
 } from './loanSchema';
 import { step1Schema } from './step1Schema';
 import { step2Schema } from './step2Schema';
+import { step3Schema } from './step3Schema';
+import { step4Schema } from './step4Schema';
 
 /**
  * Returns the exact Zod schema for validating the specified step.
@@ -62,26 +62,32 @@ export function getStepFields(step: StepNumber): string[] {
       ];
     case 3:
       return [
-        'employmentType',
-        'employerName',
-        'officialEmail',
-        'monthlyNetIncome',
-        'salaryCreditMode',
-        'totalWorkExperienceMonths',
-        'existingMonthlyEmi',
+        'panNumber',
+        'aadhaarNumber',
+        'aadhaarConsent',
+        'voterId',
+        'passportNumber',
       ];
     case 4:
       return [
-        'loanAmount',
-        'tenureMonths',
-        'loanPurpose',
-        'customPurposeDetails',
-        'acceptedInterestRate',
-        'calculatedEmi',
-        'keyFactStatementAcknowledged',
+        'currentAddressLine1',
+        'currentAddressLine2',
+        'pincode',
+        'city',
+        'state',
+        'residenceType',
+        'yearsAtAddress',
+        'monthlyRentAmount',
+        'previousAddressLine',
+        'sameAsPermanent',
+        'permanentAddressLine1',
+        'permanentAddressLine2',
+        'permanentPincode',
+        'permanentCity',
+        'permanentState',
       ];
     case 5:
-      return ['currentAddress', 'isPermanentSameAsCurrent', 'permanentAddress'];
+      return ['employmentType', 'employerName', 'officialEmail', 'monthlyNetIncome', 'salaryCreditMode', 'totalWorkExperienceMonths', 'existingMonthlyEmi'];
     case 6:
       return [
         'bankAccountNumber',
