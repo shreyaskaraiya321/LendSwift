@@ -1,10 +1,10 @@
-import { STEPS } from './stepRegistry';
+import { StepFormData, STEPS } from './stepRegistry';
 
 export interface ProgressBarProps {
   currentStep: number;
   totalSteps?: number;
   completedSteps?: Set<number> | number[];
-  formData?: Record<string, any>;
+  formData?: StepFormData;
   onStepClick?: (stepNumber: number) => void;
   className?: string;
 }

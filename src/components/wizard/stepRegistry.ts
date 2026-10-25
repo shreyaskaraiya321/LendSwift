@@ -1,10 +1,14 @@
+import { LoanApplicationData } from '@/types/loan';
+
+export type StepFormData = Partial<LoanApplicationData> | Record<string, unknown>;
+
 export interface WizardStepDefinition {
   id: string;
   stepNumber: number;
   title: string;
   shortTitle: string;
   description: string;
-  isStepVisible: (formData?: Record<string, any>) => boolean;
+  isStepVisible: (formData?: StepFormData) => boolean;
 }
 
 /**
@@ -14,21 +18,24 @@ export interface WizardStepDefinition {
  * - Visible if loanType === 'Business' AND loanAmount > 2,000,000
  * - Otherwise false
  */
-export function isStep6Visible(formData?: Record<string, any>): boolean {
+export function isStep6Visible(formData?: StepFormData): boolean {
   if (!formData) return false;
 
-  const rawLoanType = String(formData.loanType || formData.loanCategory || '').trim().toLowerCase();
-  const loanAmount = Number(formData.loanAmount) || 0;
+  const data = formData as Record<string, unknown>;
+  const rawLoanType = String(
+    data.loanType || data.loanCategory || (data as Partial<LoanApplicationData>).loanPurpose || ''
+  ).trim().toLowerCase();
+  const loanAmount = Number(data.loanAmount) || 0;
 
-  if (rawLoanType === 'home') {
+  if (rawLoanType === 'home' || rawLoanType.includes('home')) {
     return true;
   }
 
-  if (rawLoanType === 'personal' && loanAmount > 500000) {
+  if ((rawLoanType === 'personal' || rawLoanType.includes('personal')) && loanAmount > 500000) {
     return true;
   }
 
-  if (rawLoanType === 'business' && loanAmount > 2000000) {
+  if ((rawLoanType === 'business' || rawLoanType.includes('business')) && loanAmount > 2000000) {
     return true;
   }
 
@@ -110,14 +117,14 @@ export const stepRegistry = STEPS;
 /**
  * Returns all currently active/visible steps given the form state.
  */
-export function getVisibleSteps(formData?: Record<string, any>): WizardStepDefinition[] {
+export function getVisibleSteps(formData?: StepFormData): WizardStepDefinition[] {
   return STEPS.filter((step) => step.isStepVisible(formData));
 }
 
 /**
  * Checks whether a specific step number is visible given the form state.
  */
-export function isStepActive(stepNumber: number, formData?: Record<string, any>): boolean {
+export function isStepActive(stepNumber: number, formData?: StepFormData): boolean {
   const step = STEPS.find((s) => s.stepNumber === stepNumber);
   return step ? step.isStepVisible(formData) : false;
 }
@@ -125,7 +132,7 @@ export function isStepActive(stepNumber: number, formData?: Record<string, any>)
 /**
  * Resolves the next visible step number, jumping over any skipped/hidden steps.
  */
-export function getNextVisibleStep(currentStep: number, formData?: Record<string, any>): number {
+export function getNextVisibleStep(currentStep: number, formData?: StepFormData): number {
   const visibleSteps = getVisibleSteps(formData);
   const currentIndex = visibleSteps.findIndex((s) => s.stepNumber === currentStep);
 
@@ -144,7 +151,7 @@ export function getNextVisibleStep(currentStep: number, formData?: Record<string
 /**
  * Resolves the previous visible step number, jumping backward over any skipped/hidden steps.
  */
-export function getPreviousVisibleStep(currentStep: number, formData?: Record<string, any>): number {
+export function getPreviousVisibleStep(currentStep: number, formData?: StepFormData): number {
   const visibleSteps = getVisibleSteps(formData);
   const currentIndex = visibleSteps.findIndex((s) => s.stepNumber === currentStep);
 

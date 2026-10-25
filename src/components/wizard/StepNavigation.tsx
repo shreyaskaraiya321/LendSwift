@@ -7,7 +7,7 @@ import { FormAutoSaveState, StepNumber } from '@/types/wizard';
  * Focuses the first interactive input element inside the specified container,
  * ignoring elements inside data-step-navigation.
  */
-export function focusFirstStepInput(container?: HTMLElement | null): boolean {
+function focusFirstStepInput(container?: HTMLElement | null): boolean {
   if (!container || typeof container.querySelectorAll !== 'function') {
     return false;
   }

@@ -9,7 +9,7 @@ import { Button } from '../common/Button';
  * @param {HTMLElement|null} container
  * @returns {boolean} Whether an element was successfully focused
  */
-export function focusFirstStepInput(container) {
+function focusFirstStepInput(container) {
   if (!container || typeof container.querySelectorAll !== 'function') {
     return false;
   }
