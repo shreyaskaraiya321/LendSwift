@@ -12,6 +12,7 @@ dist
 dist-ssr
 *.local
 *.tsbuildinfo
+vite.config.js
 
 # Editor directories and files
 .vscode/*
