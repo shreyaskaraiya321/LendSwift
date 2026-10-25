@@ -9,7 +9,8 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "cypress:open": "cypress open",
-    "cypress:run": "cypress run"
+    "cypress:run": "cypress run",
+    "postinstall": "node -e \"const fs=require('fs'); if(!fs.existsSync('node_modules/@types/cypress')){ fs.mkdirSync('node_modules/@types/cypress', {recursive:true}); fs.writeFileSync('node_modules/@types/cypress/index.d.ts', '/// <reference path=\\\"../../cypress/types/index.d.ts\\\" />\\n'); }\""
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
