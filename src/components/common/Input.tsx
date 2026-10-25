@@ -1,9 +1,69 @@
-import { forwardRef, InputHTMLAttributes, ReactNode, useId } from 'react';
+import {
+  createContext,
+  forwardRef,
+  HTMLAttributes,
+  InputHTMLAttributes,
+  LabelHTMLAttributes,
+  ReactNode,
+  useContext,
+  useId,
+} from 'react';
 
-export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
-  label: string;
-  error?: string;
-  helperText?: string;
+export interface InputContextValue {
+  id: string;
+  errorId: string;
+  helpTextId: string;
+  hasError: boolean;
+  error?: ReactNode;
+  disabled?: boolean;
+  required?: boolean;
+}
+
+const InputContext = createContext<InputContextValue | null>(null);
+
+function useInputContext() {
+  return useContext(InputContext);
+}
+
+/* =========================================================================
+   1. Input.Label Component
+   ========================================================================= */
+
+export interface InputLabelProps extends LabelHTMLAttributes<HTMLLabelElement> {
+  children?: ReactNode;
+  required?: boolean;
+}
+
+export const InputLabel = forwardRef<HTMLLabelElement, InputLabelProps>(
+  ({ children, htmlFor, required, className = '', ...props }, ref) => {
+    const context = useInputContext();
+    const targetId = htmlFor || context?.id;
+    const isRequired = required ?? context?.required;
+
+    return (
+      <label
+        ref={ref}
+        htmlFor={targetId}
+        className={`text-sm font-medium text-neutral-700 flex items-center gap-1 select-none ${className}`}
+        {...props}
+      >
+        <span>{children}</span>
+        {isRequired && (
+          <span className="text-danger-500 font-bold" aria-hidden="true">
+            *
+          </span>
+        )}
+      </label>
+    );
+  }
+);
+InputLabel.displayName = 'Input.Label';
+
+/* =========================================================================
+   2. Input.Field Component
+   ========================================================================= */
+
+export interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   prefixText?: string;
   suffixText?: string;
   iconLeft?: ReactNode;
@@ -11,9 +71,186 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   containerClassName?: string;
 }
 
-export const Input = forwardRef<HTMLInputElement, InputProps>(
+export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
   (
     {
+      id,
+      disabled,
+      required,
+      prefixText,
+      suffixText,
+      iconLeft,
+      iconRight,
+      className = '',
+      containerClassName = '',
+      'aria-describedby': ariaDescribedBy,
+      ...props
+    },
+    ref
+  ) => {
+    const context = useInputContext();
+    const inputId = id || context?.id;
+    const isDisabled = disabled ?? context?.disabled;
+    const isRequired = required ?? context?.required;
+    const hasError = context?.hasError;
+
+    const describedByParts = [
+      ariaDescribedBy,
+      context?.hasError ? context.errorId : undefined,
+      context?.helpTextId,
+    ].filter(Boolean);
+    const describedBy = describedByParts.length > 0 ? describedByParts.join(' ') : undefined;
+
+    return (
+      <div className={`relative rounded-fintech shadow-sm flex items-center ${containerClassName}`}>
+        {iconLeft && (
+          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-neutral-400">
+            {iconLeft}
+          </div>
+        )}
+
+        {prefixText && (
+          <span className="inline-flex items-center pl-3.5 pr-1.5 text-sm font-semibold text-neutral-500 select-none pointer-events-none">
+            {prefixText}
+          </span>
+        )}
+
+        <input
+          ref={ref}
+          id={inputId}
+          disabled={isDisabled}
+          required={isRequired}
+          aria-invalid={hasError ? 'true' : 'false'}
+          aria-describedby={describedBy}
+          className={`
+            w-full rounded-fintech py-2.5 text-sm text-neutral-900 bg-white border transition-colors duration-150
+            placeholder:text-neutral-400
+            focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-700 focus-visible:ring-offset-1
+            ${iconLeft ? 'pl-10' : prefixText ? 'pl-1' : 'pl-3.5'}
+            ${iconRight ? 'pr-10' : suffixText ? 'pr-12' : 'pr-3.5'}
+            ${
+              hasError
+                ? 'border-danger-500 focus:border-danger-600 focus-visible:ring-danger-500 text-danger-900'
+                : 'border-neutral-300 hover:border-neutral-400 focus:border-primary-700'
+            }
+            ${isDisabled ? 'bg-neutral-100 text-neutral-500 cursor-not-allowed border-neutral-200' : ''}
+            ${className}
+          `}
+          {...props}
+        />
+
+        {suffixText && (
+          <span className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-xs font-medium text-neutral-500 pointer-events-none select-none">
+            {suffixText}
+          </span>
+        )}
+
+        {iconRight && !suffixText && (
+          <div className="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none text-neutral-400">
+            {iconRight}
+          </div>
+        )}
+      </div>
+    );
+  }
+);
+InputField.displayName = 'Input.Field';
+
+/* =========================================================================
+   3. Input.Error Component
+   ========================================================================= */
+
+export interface InputErrorProps extends HTMLAttributes<HTMLParagraphElement> {
+  id?: string;
+  children?: ReactNode;
+}
+
+export const InputError = forwardRef<HTMLParagraphElement, InputErrorProps>(
+  ({ id, children, className = '', ...props }, ref) => {
+    const context = useInputContext();
+    const errorId = id || context?.errorId;
+    const content = children ?? context?.error;
+
+    if (!content) return null;
+
+    return (
+      <p
+        ref={ref}
+        id={errorId}
+        role="alert"
+        aria-live="polite"
+        className={`text-xs text-danger-600 font-medium flex items-center gap-1 mt-1 ${className}`}
+        {...props}
+      >
+        <svg
+          className="w-3.5 h-3.5 shrink-0 text-danger-500"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+          aria-hidden="true"
+        >
+          <path
+            fillRule="evenodd"
+            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+            clipRule="evenodd"
+          />
+        </svg>
+        <span>{content}</span>
+      </p>
+    );
+  }
+);
+InputError.displayName = 'Input.Error';
+
+/* =========================================================================
+   4. Input.HelpText Component
+   ========================================================================= */
+
+export interface InputHelpTextProps extends HTMLAttributes<HTMLParagraphElement> {
+  id?: string;
+  children?: ReactNode;
+}
+
+export const InputHelpText = forwardRef<HTMLParagraphElement, InputHelpTextProps>(
+  ({ id, children, className = '', ...props }, ref) => {
+    const context = useInputContext();
+    const helpId = id || context?.helpTextId;
+
+    if (!children) return null;
+
+    return (
+      <p
+        ref={ref}
+        id={helpId}
+        className={`text-xs text-neutral-500 mt-1 ${className}`}
+        {...props}
+      >
+        {children}
+      </p>
+    );
+  }
+);
+InputHelpText.displayName = 'Input.HelpText';
+
+/* =========================================================================
+   5. Main Root Input Component (Compound + Standalone)
+   ========================================================================= */
+
+export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+  label?: ReactNode;
+  error?: ReactNode;
+  helperText?: ReactNode;
+  prefixText?: string;
+  suffixText?: string;
+  iconLeft?: ReactNode;
+  iconRight?: ReactNode;
+  containerClassName?: string;
+  children?: ReactNode;
+}
+
+const InputRoot = forwardRef<HTMLInputElement, InputProps>(
+  (
+    {
+      id,
       label,
       error,
       helperText,
@@ -21,11 +258,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       suffixText,
       iconLeft,
       iconRight,
-      id,
       required,
       disabled,
       className = '',
       containerClassName = '',
+      children,
       ...rest
     },
     ref
@@ -33,97 +270,61 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     const generatedId = useId();
     const inputId = id || generatedId;
     const errorId = `${inputId}-error`;
-    const helperId = `${inputId}-helper`;
-
+    const helpTextId = `${inputId}-helper`;
     const hasError = Boolean(error);
 
+    const contextValue: InputContextValue = {
+      id: inputId,
+      errorId,
+      helpTextId,
+      hasError,
+      error,
+      disabled,
+      required,
+    };
+
     return (
-      <div className={`w-full flex flex-col gap-1.5 ${containerClassName}`}>
-        <div className="flex items-center justify-between">
-          <label
-            htmlFor={inputId}
-            className="text-sm font-medium text-neutral-700 flex items-center gap-1 select-none"
-          >
-            <span>{label}</span>
-            {required && <span className="text-danger-500 font-bold" aria-hidden="true">*</span>}
-          </label>
-        </div>
-
-        <div className="relative rounded-fintech shadow-sm flex items-center">
-          {iconLeft && (
-            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-neutral-400">
-              {iconLeft}
-            </div>
-          )}
-
-          {prefixText && (
-            <span className="inline-flex items-center pl-3.5 pr-1.5 text-sm font-semibold text-neutral-500 select-none pointer-events-none">
-              {prefixText}
-            </span>
-          )}
-
-          <input
-            ref={ref}
-            id={inputId}
-            disabled={disabled}
-            required={required}
-            aria-invalid={hasError ? 'true' : 'false'}
-            aria-describedby={
-              hasError ? errorId : helperText ? helperId : undefined
-            }
-            className={`
-              w-full rounded-fintech py-2.5 text-sm text-neutral-900 bg-white border transition-colors duration-150
-              placeholder:text-neutral-400 focus:outline-none
-              ${iconLeft ? 'pl-10' : prefixText ? 'pl-1' : 'pl-3.5'}
-              ${iconRight ? 'pr-10' : suffixText ? 'pr-12' : 'pr-3.5'}
-              ${
-                hasError
-                  ? 'border-danger-500 focus:border-danger-600 focus:ring-1 focus:ring-danger-500 text-danger-900'
-                  : 'border-neutral-300 hover:border-neutral-400 focus:border-primary-700 focus:ring-1 focus:ring-primary-700'
-              }
-              ${disabled ? 'bg-neutral-100 text-neutral-500 cursor-not-allowed border-neutral-200' : ''}
-              ${className}
-            `}
-            {...rest}
-          />
-
-          {suffixText && (
-            <span className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-xs font-medium text-neutral-500 pointer-events-none select-none">
-              {suffixText}
-            </span>
-          )}
-
-          {iconRight && !suffixText && (
-            <div className="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none text-neutral-400">
-              {iconRight}
-            </div>
-          )}
-        </div>
-
-        {hasError ? (
-          <p id={errorId} className="text-xs text-danger-600 font-medium flex items-center gap-1 mt-0.5" role="alert">
-            <svg
-              className="w-3.5 h-3.5 shrink-0 text-danger-500"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              aria-hidden="true"
-            >
-              <path
-                fillRule="evenodd"
-                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                clipRule="evenodd"
+      <InputContext.Provider value={contextValue}>
+        <div className={`w-full flex flex-col gap-1.5 ${containerClassName}`}>
+          {children ? (
+            children
+          ) : (
+            <>
+              {label && <InputLabel>{label}</InputLabel>}
+              <InputField
+                ref={ref}
+                prefixText={prefixText}
+                suffixText={suffixText}
+                iconLeft={iconLeft}
+                iconRight={iconRight}
+                className={className}
+                {...rest}
               />
-            </svg>
-            <span>{error}</span>
-          </p>
-        ) : helperText ? (
-          <p id={helperId} className="text-xs text-neutral-500 mt-0.5">
-            {helperText}
-          </p>
-        ) : null}
-      </div>
+              {hasError ? (
+                <InputError />
+              ) : helperText ? (
+                <InputHelpText>{helperText}</InputHelpText>
+              ) : null}
+            </>
+          )}
+        </div>
+      </InputContext.Provider>
     );
   }
 );
 
-Input.displayName = 'Input';
+InputRoot.displayName = 'Input';
+
+export type InputComponent = typeof InputRoot & {
+  Label: typeof InputLabel;
+  Field: typeof InputField;
+  Error: typeof InputError;
+  HelpText: typeof InputHelpText;
+};
+
+export const Input = Object.assign(InputRoot, {
+  Label: InputLabel,
+  Field: InputField,
+  Error: InputError,
+  HelpText: InputHelpText,
+}) as InputComponent;
