@@ -107,6 +107,8 @@ module.exports = {
   ignorePatterns: [
     'dist',
     'node_modules',
+    'cypress',
+    'cypress.config.js',
     '*.config.js',
     '*.config.cjs',
     '*.d.ts',
