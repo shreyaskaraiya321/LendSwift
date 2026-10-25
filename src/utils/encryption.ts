@@ -92,7 +92,7 @@ export async function encryptData(
   const cryptoKey = await deriveKey(secretKey);
 
   const encryptedBuffer = await subtle.encrypt(
-    { name: 'AES-GCM', iv },
+    { name: 'AES-GCM', iv: iv as unknown as BufferSource },
     cryptoKey,
     dataBuffer
   );
@@ -136,9 +136,9 @@ export async function decryptData(
     const cryptoKey = await deriveKey(secretKey);
 
     const decryptedBuffer = await subtle.decrypt(
-      { name: 'AES-GCM', iv },
+      { name: 'AES-GCM', iv: iv as unknown as BufferSource },
       cryptoKey,
-      ciphertextBytes
+      ciphertextBytes as unknown as BufferSource
     );
 
     return new TextDecoder().decode(decryptedBuffer);
