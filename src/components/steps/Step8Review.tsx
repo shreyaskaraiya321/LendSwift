@@ -4,7 +4,6 @@ import { useFormContext } from 'react-hook-form';
 import { Alert } from '@/components/common/Alert';
 import { Badge } from '@/components/common/Badge';
 import { Button } from '@/components/common/Button';
-import { Card } from '@/components/common/Card';
 import { Checkbox } from '@/components/common/Checkbox';
 import { isStep6Visible } from '@/components/wizard/stepRegistry';
 import { LoanApplicationData, UploadedFileMetadata } from '@/types/loan';
@@ -171,7 +170,7 @@ export function Step8Review({ onEditStep, onFinalSubmit }: Step8ReviewProps) {
 
   const handleCopyReference = () => {
     if (generatedRefId) {
-      navigator.clipboard.writeText(generatedRefId);
+      void navigator.clipboard.writeText(generatedRefId);
       setIsCopied(true);
       setTimeout(() => setIsCopied(false), 2000);
     }
@@ -329,7 +328,7 @@ export function Step8Review({ onEditStep, onFinalSubmit }: Step8ReviewProps) {
               Application Particulars (Steps 1 to 7)
             </h3>
             <p className="text-xs text-neutral-500">
-              Verify all entered information. Click any "Edit" button to modify details before final submission.
+              Verify all entered information. Click any &quot;Edit&quot; button to modify details before final submission.
             </p>
           </div>
 
@@ -354,28 +353,19 @@ export function Step8Review({ onEditStep, onFinalSubmit }: Step8ReviewProps) {
 
         {/* Accordion Item 1: Loan Terms */}
         <div className="border border-neutral-200 rounded-xl bg-white overflow-hidden shadow-xs">
-          <div
-            onClick={() => toggleSection('step1')}
-            className="flex items-center justify-between p-4 cursor-pointer hover:bg-neutral-50 transition-colors select-none"
-          >
-            <div className="flex items-center gap-3">
-              <span className="w-6 h-6 rounded-full bg-primary-100 text-primary-800 text-xs font-bold flex items-center justify-center">
-                1
-              </span>
-              <span className="text-sm font-bold text-neutral-900">Loan Terms & Category Selection</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleEditClick(1);
-                }}
-              >
-                Edit
-              </Button>
+          <div className="flex items-center justify-between p-3.5 sm:p-4">
+            <button
+              type="button"
+              onClick={() => toggleSection('step1')}
+              aria-expanded={openSections.step1}
+              className="flex-1 flex items-center justify-between text-left select-none focus:outline-none focus:ring-2 focus:ring-primary-700 rounded-lg p-1 mr-2"
+            >
+              <div className="flex items-center gap-3">
+                <span className="w-6 h-6 rounded-full bg-primary-100 text-primary-800 text-xs font-bold flex items-center justify-center">
+                  1
+                </span>
+                <span className="text-sm font-bold text-neutral-900">Loan Terms & Category Selection</span>
+              </div>
               <svg
                 className={`w-4 h-4 text-neutral-400 transition-transform duration-200 ${
                   openSections.step1 ? 'rotate-180' : ''
@@ -386,7 +376,16 @@ export function Step8Review({ onEditStep, onFinalSubmit }: Step8ReviewProps) {
               >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
               </svg>
-            </div>
+            </button>
+
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => handleEditClick(1)}
+            >
+              Edit
+            </Button>
           </div>
 
           {openSections.step1 && (
@@ -417,28 +416,19 @@ export function Step8Review({ onEditStep, onFinalSubmit }: Step8ReviewProps) {
 
         {/* Accordion Item 2: Personal Information */}
         <div className="border border-neutral-200 rounded-xl bg-white overflow-hidden shadow-xs">
-          <div
-            onClick={() => toggleSection('step2')}
-            className="flex items-center justify-between p-4 cursor-pointer hover:bg-neutral-50 transition-colors select-none"
-          >
-            <div className="flex items-center gap-3">
-              <span className="w-6 h-6 rounded-full bg-primary-100 text-primary-800 text-xs font-bold flex items-center justify-center">
-                2
-              </span>
-              <span className="text-sm font-bold text-neutral-900">Personal Information & Age Gate</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleEditClick(2);
-                }}
-              >
-                Edit
-              </Button>
+          <div className="flex items-center justify-between p-3.5 sm:p-4">
+            <button
+              type="button"
+              onClick={() => toggleSection('step2')}
+              aria-expanded={openSections.step2}
+              className="flex-1 flex items-center justify-between text-left select-none focus:outline-none focus:ring-2 focus:ring-primary-700 rounded-lg p-1 mr-2"
+            >
+              <div className="flex items-center gap-3">
+                <span className="w-6 h-6 rounded-full bg-primary-100 text-primary-800 text-xs font-bold flex items-center justify-center">
+                  2
+                </span>
+                <span className="text-sm font-bold text-neutral-900">Personal Information & Age Gate</span>
+              </div>
               <svg
                 className={`w-4 h-4 text-neutral-400 transition-transform duration-200 ${
                   openSections.step2 ? 'rotate-180' : ''
@@ -449,7 +439,16 @@ export function Step8Review({ onEditStep, onFinalSubmit }: Step8ReviewProps) {
               >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
               </svg>
-            </div>
+            </button>
+
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => handleEditClick(2)}
+            >
+              Edit
+            </Button>
           </div>
 
           {openSections.step2 && (
@@ -475,7 +474,7 @@ export function Step8Review({ onEditStep, onFinalSubmit }: Step8ReviewProps) {
                 <strong className="text-neutral-900">{formData.email}</strong>
               </div>
               <div>
-                <span className="text-neutral-400 block">Parents' Names:</span>
+                <span className="text-neutral-400 block">Parents&apos; Names:</span>
                 <strong className="text-neutral-900">{formData.fatherName || '—'} / {formData.motherName || '—'}</strong>
               </div>
             </div>
@@ -484,28 +483,19 @@ export function Step8Review({ onEditStep, onFinalSubmit }: Step8ReviewProps) {
 
         {/* Accordion Item 3: Statutory KYC & Identity Verification */}
         <div className="border border-neutral-200 rounded-xl bg-white overflow-hidden shadow-xs">
-          <div
-            onClick={() => toggleSection('step3')}
-            className="flex items-center justify-between p-4 cursor-pointer hover:bg-neutral-50 transition-colors select-none"
-          >
-            <div className="flex items-center gap-3">
-              <span className="w-6 h-6 rounded-full bg-primary-100 text-primary-800 text-xs font-bold flex items-center justify-center">
-                3
-              </span>
-              <span className="text-sm font-bold text-neutral-900">Statutory KYC & Government ID</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleEditClick(3);
-                }}
-              >
-                Edit
-              </Button>
+          <div className="flex items-center justify-between p-3.5 sm:p-4">
+            <button
+              type="button"
+              onClick={() => toggleSection('step3')}
+              aria-expanded={openSections.step3}
+              className="flex-1 flex items-center justify-between text-left select-none focus:outline-none focus:ring-2 focus:ring-primary-700 rounded-lg p-1 mr-2"
+            >
+              <div className="flex items-center gap-3">
+                <span className="w-6 h-6 rounded-full bg-primary-100 text-primary-800 text-xs font-bold flex items-center justify-center">
+                  3
+                </span>
+                <span className="text-sm font-bold text-neutral-900">Statutory KYC & Government ID</span>
+              </div>
               <svg
                 className={`w-4 h-4 text-neutral-400 transition-transform duration-200 ${
                   openSections.step3 ? 'rotate-180' : ''
@@ -516,7 +506,16 @@ export function Step8Review({ onEditStep, onFinalSubmit }: Step8ReviewProps) {
               >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
               </svg>
-            </div>
+            </button>
+
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => handleEditClick(3)}
+            >
+              Edit
+            </Button>
           </div>
 
           {openSections.step3 && (
@@ -545,28 +544,19 @@ export function Step8Review({ onEditStep, onFinalSubmit }: Step8ReviewProps) {
 
         {/* Accordion Item 4: Residential Address */}
         <div className="border border-neutral-200 rounded-xl bg-white overflow-hidden shadow-xs">
-          <div
-            onClick={() => toggleSection('step4')}
-            className="flex items-center justify-between p-4 cursor-pointer hover:bg-neutral-50 transition-colors select-none"
-          >
-            <div className="flex items-center gap-3">
-              <span className="w-6 h-6 rounded-full bg-primary-100 text-primary-800 text-xs font-bold flex items-center justify-center">
-                4
-              </span>
-              <span className="text-sm font-bold text-neutral-900">Residential Address & Verification</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleEditClick(4);
-                }}
-              >
-                Edit
-              </Button>
+          <div className="flex items-center justify-between p-3.5 sm:p-4">
+            <button
+              type="button"
+              onClick={() => toggleSection('step4')}
+              aria-expanded={openSections.step4}
+              className="flex-1 flex items-center justify-between text-left select-none focus:outline-none focus:ring-2 focus:ring-primary-700 rounded-lg p-1 mr-2"
+            >
+              <div className="flex items-center gap-3">
+                <span className="w-6 h-6 rounded-full bg-primary-100 text-primary-800 text-xs font-bold flex items-center justify-center">
+                  4
+                </span>
+                <span className="text-sm font-bold text-neutral-900">Residential Address & Verification</span>
+              </div>
               <svg
                 className={`w-4 h-4 text-neutral-400 transition-transform duration-200 ${
                   openSections.step4 ? 'rotate-180' : ''
@@ -577,7 +567,16 @@ export function Step8Review({ onEditStep, onFinalSubmit }: Step8ReviewProps) {
               >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
               </svg>
-            </div>
+            </button>
+
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => handleEditClick(4)}
+            >
+              Edit
+            </Button>
           </div>
 
           {openSections.step4 && (
@@ -607,28 +606,19 @@ export function Step8Review({ onEditStep, onFinalSubmit }: Step8ReviewProps) {
 
         {/* Accordion Item 5: Employment & Income */}
         <div className="border border-neutral-200 rounded-xl bg-white overflow-hidden shadow-xs">
-          <div
-            onClick={() => toggleSection('step5')}
-            className="flex items-center justify-between p-4 cursor-pointer hover:bg-neutral-50 transition-colors select-none"
-          >
-            <div className="flex items-center gap-3">
-              <span className="w-6 h-6 rounded-full bg-primary-100 text-primary-800 text-xs font-bold flex items-center justify-center">
-                5
-              </span>
-              <span className="text-sm font-bold text-neutral-900">Employment & Income Assessment</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleEditClick(5);
-                }}
-              >
-                Edit
-              </Button>
+          <div className="flex items-center justify-between p-3.5 sm:p-4">
+            <button
+              type="button"
+              onClick={() => toggleSection('step5')}
+              aria-expanded={openSections.step5}
+              className="flex-1 flex items-center justify-between text-left select-none focus:outline-none focus:ring-2 focus:ring-primary-700 rounded-lg p-1 mr-2"
+            >
+              <div className="flex items-center gap-3">
+                <span className="w-6 h-6 rounded-full bg-primary-100 text-primary-800 text-xs font-bold flex items-center justify-center">
+                  5
+                </span>
+                <span className="text-sm font-bold text-neutral-900">Employment & Income Assessment</span>
+              </div>
               <svg
                 className={`w-4 h-4 text-neutral-400 transition-transform duration-200 ${
                   openSections.step5 ? 'rotate-180' : ''
@@ -639,7 +629,16 @@ export function Step8Review({ onEditStep, onFinalSubmit }: Step8ReviewProps) {
               >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
               </svg>
-            </div>
+            </button>
+
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => handleEditClick(5)}
+            >
+              Edit
+            </Button>
           </div>
 
           {openSections.step5 && (
@@ -675,28 +674,19 @@ export function Step8Review({ onEditStep, onFinalSubmit }: Step8ReviewProps) {
         {/* Accordion Item 6: Co-Applicant Details (Conditional) */}
         {hasStep6 && (
           <div className="border border-neutral-200 rounded-xl bg-white overflow-hidden shadow-xs">
-            <div
-              onClick={() => toggleSection('step6')}
-              className="flex items-center justify-between p-4 cursor-pointer hover:bg-neutral-50 transition-colors select-none"
-            >
-              <div className="flex items-center gap-3">
-                <span className="w-6 h-6 rounded-full bg-primary-100 text-primary-800 text-xs font-bold flex items-center justify-center">
-                  6
-                </span>
-                <span className="text-sm font-bold text-neutral-900">Co-Applicant & Guarantor Details</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleEditClick(6);
-                  }}
-                >
-                  Edit
-                </Button>
+            <div className="flex items-center justify-between p-3.5 sm:p-4">
+              <button
+                type="button"
+                onClick={() => toggleSection('step6')}
+                aria-expanded={openSections.step6}
+                className="flex-1 flex items-center justify-between text-left select-none focus:outline-none focus:ring-2 focus:ring-primary-700 rounded-lg p-1 mr-2"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="w-6 h-6 rounded-full bg-primary-100 text-primary-800 text-xs font-bold flex items-center justify-center">
+                    6
+                  </span>
+                  <span className="text-sm font-bold text-neutral-900">Co-Applicant & Guarantor Details</span>
+                </div>
                 <svg
                   className={`w-4 h-4 text-neutral-400 transition-transform duration-200 ${
                     openSections.step6 ? 'rotate-180' : ''
@@ -707,7 +697,16 @@ export function Step8Review({ onEditStep, onFinalSubmit }: Step8ReviewProps) {
                 >
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
                 </svg>
-              </div>
+              </button>
+
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => handleEditClick(6)}
+              >
+                Edit
+              </Button>
             </div>
 
             {openSections.step6 && (
@@ -735,28 +734,19 @@ export function Step8Review({ onEditStep, onFinalSubmit }: Step8ReviewProps) {
 
         {/* Accordion Item 7: Uploaded Documents & E-Signature Preview */}
         <div className="border border-neutral-200 rounded-xl bg-white overflow-hidden shadow-xs">
-          <div
-            onClick={() => toggleSection('step7')}
-            className="flex items-center justify-between p-4 cursor-pointer hover:bg-neutral-50 transition-colors select-none"
-          >
-            <div className="flex items-center gap-3">
-              <span className="w-6 h-6 rounded-full bg-primary-100 text-primary-800 text-xs font-bold flex items-center justify-center">
-                7
-              </span>
-              <span className="text-sm font-bold text-neutral-900">Document Uploads & Digital E-Signature</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleEditClick(7);
-                }}
-              >
-                Edit
-              </Button>
+          <div className="flex items-center justify-between p-3.5 sm:p-4">
+            <button
+              type="button"
+              onClick={() => toggleSection('step7')}
+              aria-expanded={openSections.step7}
+              className="flex-1 flex items-center justify-between text-left select-none focus:outline-none focus:ring-2 focus:ring-primary-700 rounded-lg p-1 mr-2"
+            >
+              <div className="flex items-center gap-3">
+                <span className="w-6 h-6 rounded-full bg-primary-100 text-primary-800 text-xs font-bold flex items-center justify-center">
+                  7
+                </span>
+                <span className="text-sm font-bold text-neutral-900">Document Uploads & Digital E-Signature</span>
+              </div>
               <svg
                 className={`w-4 h-4 text-neutral-400 transition-transform duration-200 ${
                   openSections.step7 ? 'rotate-180' : ''
@@ -767,7 +757,16 @@ export function Step8Review({ onEditStep, onFinalSubmit }: Step8ReviewProps) {
               >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
               </svg>
-            </div>
+            </button>
+
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => handleEditClick(7)}
+            >
+              Edit
+            </Button>
           </div>
 
           {openSections.step7 && (

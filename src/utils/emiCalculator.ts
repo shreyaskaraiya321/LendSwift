@@ -1,6 +1,9 @@
 import { GST_RATE } from '@/constants/loanConstants';
 import { KeyFactStatement } from '@/types/api';
 
+export { GST_RATE };
+
+
 /**
  * Standard LendSwift Interest Rate Constants (% p.a.)
  */

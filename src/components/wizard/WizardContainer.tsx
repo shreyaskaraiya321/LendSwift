@@ -14,7 +14,7 @@ import {
   Step5Employment,
   Step6CoApplicant,
   Step7Documents,
-  Step8ReviewConsent,
+  Step8Review,
 } from '@/components/steps';
 import { ProgressBar } from '@/components/wizard/ProgressBar';
 import { ResumeDraftModal } from '@/components/wizard/ResumeDraftModal';
@@ -424,9 +424,9 @@ export function WizardContainer() {
                 {currentStep === 5 && <Step5Employment />}
                 {currentStep === 6 && <Step6CoApplicant />}
                 {currentStep === 7 && <Step7Documents />}
-                {currentStep === 8 && <Step8ReviewConsent onNext={handleNextStep} onPrevious={handlePreviousStep} />}
-
+                {currentStep === 8 && <Step8Review onEditStep={handleStepClick} />}
               </div>
+
 
               {/* Navigation Action Bar */}
               <StepNavigation
