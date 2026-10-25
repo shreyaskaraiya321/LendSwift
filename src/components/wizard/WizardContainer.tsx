@@ -129,11 +129,16 @@ const DEFAULT_FORM_VALUES: Partial<LoanApplicationData> = {
   docPropertyDocs: null,
   docBusinessRegistration: null,
   digitalSignature: '',
+  consentInformationAccuracy: false,
+  consentCreditBureau: false,
+  consentTermsKfs: false,
+  consentRegulatoryComm: false,
   cibilScoreConsent: false,
   rbiFairPracticesConsent: false,
   privacyPolicyConsent: false,
   eSignOtpVerified: false,
 };
+
 
 
 export function WizardContainer() {

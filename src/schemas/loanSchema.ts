@@ -12,6 +12,8 @@ import { step4BaseSchema } from './step4Schema';
 import { step5BaseSchema } from './step5Schema';
 import { step6BaseSchema as step6BaseFromStep6 } from './step6Schema';
 import { step7BaseSchema as step7BaseFromStep7 } from './step7Schema';
+import { step8BaseSchema as step8BaseFromStep8 } from './step8Schema';
+
 
 // Common Indian mobile regex (starts with 6, 7, 8, or 9 and has 10 digits)
 const indianMobileRegex = /^[6-9]\d{9}$/;
@@ -228,21 +230,13 @@ export const step7LegacySchema = z.object({
 });
 
 /**
- * Step 8: Final Review & e-Sign Agreement Schema
+ * Step 8: Final Review & e-Sign Agreement Schema (Legacy / Sub-schema)
  */
-export const step8Schema = z.object({
-  cibilScoreConsent: z.boolean().refine((val) => val === true, {
-    message: 'Explicit consent required to pull credit report from CIBIL / Experian',
-  }),
-  rbiFairPracticesConsent: z.boolean().refine((val) => val === true, {
-    message: 'You must accept the NBFC Fair Practices Code and Loan Agreement terms',
-  }),
-  privacyPolicyConsent: z.boolean().refine((val) => val === true, {
-    message: 'Acceptance of RBI Digital Lending Data Protection Privacy Policy is required',
-  }),
-  eSignOtpVerified: z.boolean().refine((val) => val === true, {
-    message: 'Aadhaar e-Sign OTP confirmation is required to execute the digital contract',
-  }),
+export const step8LegacySchema = z.object({
+  cibilScoreConsent: z.boolean().optional(),
+  rbiFairPracticesConsent: z.boolean().optional(),
+  privacyPolicyConsent: z.boolean().optional(),
+  eSignOtpVerified: z.boolean().optional(),
   applicationReferenceNumber: z.string().optional(),
   submissionTimestamp: z.string().optional(),
 });
@@ -257,6 +251,7 @@ export const loanApplicationSchema = step1BaseSchema
   .merge(step5BaseSchema)
   .merge(step6BaseFromStep6)
   .merge(step7BaseFromStep7)
+  .merge(step8BaseFromStep8)
   .merge(step1IdentitySchema)
   .merge(step2KycSchema)
   .merge(step3EmploymentSchema)
@@ -264,5 +259,6 @@ export const loanApplicationSchema = step1BaseSchema
   .merge(step5AddressLegacySchema)
   .merge(step6BankBaseLegacySchema)
   .merge(step7LegacySchema)
-  .merge(step8Schema);
+  .merge(step8LegacySchema);
+
 

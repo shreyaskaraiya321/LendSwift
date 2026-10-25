@@ -160,7 +160,11 @@ export interface LoanApplicationData {
   selfieVerificationConsent: boolean;
   geolocationConsent: boolean;
 
-  // Step 8: Final Review & e-Sign
+  // Step 8: Mandatory RBI Consents & Final Review
+  consentInformationAccuracy?: boolean;
+  consentCreditBureau?: boolean;
+  consentTermsKfs?: boolean;
+  consentRegulatoryComm?: boolean;
   cibilScoreConsent: boolean;
   rbiFairPracticesConsent: boolean;
   privacyPolicyConsent: boolean;
@@ -168,6 +172,7 @@ export interface LoanApplicationData {
   applicationReferenceNumber?: string;
   submissionTimestamp?: string;
 }
+
 
 export interface UploadedFileMetadata {
   name: string;

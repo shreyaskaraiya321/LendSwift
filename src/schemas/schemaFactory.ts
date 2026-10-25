@@ -2,7 +2,6 @@ import { z, ZodTypeAny } from 'zod';
 
 import { StepNumber } from '@/types/wizard';
 
-import { step8Schema } from './loanSchema';
 import { step1Schema } from './step1Schema';
 import { step2Schema } from './step2Schema';
 import { step3Schema } from './step3Schema';
@@ -10,6 +9,8 @@ import { step4Schema } from './step4Schema';
 import { step5Schema } from './step5Schema';
 import { step6Schema } from './step6Schema';
 import { step7Schema } from './step7Schema';
+import { step8Schema } from './step8Schema';
+
 
 
 /**
@@ -122,12 +123,13 @@ export function getStepFields(step: StepNumber): string[] {
 
     case 8:
       return [
-        'cibilScoreConsent',
-        'rbiFairPracticesConsent',
-        'privacyPolicyConsent',
-        'eSignOtpVerified',
+        'consentInformationAccuracy',
+        'consentCreditBureau',
+        'consentTermsKfs',
+        'consentRegulatoryComm',
       ];
     default:
       return [];
   }
 }
+
