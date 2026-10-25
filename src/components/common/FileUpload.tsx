@@ -1,15 +1,12 @@
 import { MouseEvent, useState } from 'react';
-import { useDropzone } from 'react-dropzone';
+import { FileRejection, useDropzone } from 'react-dropzone';
 
 import { Badge } from '@/components/common/Badge';
+import type { UploadedFileMetadata } from '@/types/loan';
 import { formatFileSize } from '@/utils/formatters';
 import compressImage from '@/utils/imageCompressor';
 
-
-import type { UploadedFileMetadata } from '@/types/loan';
-
 export type { UploadedFileMetadata };
-
 
 export interface FileUploadProps {
   label: string;
@@ -36,7 +33,8 @@ export function FileUpload({
   const [isProcessing, setIsProcessing] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(100);
 
-  const onDrop = async (acceptedFiles: File[], fileRejections: Array<{ errors: Array<{ message: string }> }>) => {
+  const onDrop = async (acceptedFiles: File[], fileRejections: FileRejection[]) => {
+
     setLocalError('');
 
     if (fileRejections && fileRejections.length > 0) {

@@ -16,7 +16,6 @@ import {
   Step7Documents,
   Step8ReviewConsent,
 } from '@/components/steps';
-
 import { ProgressBar } from '@/components/wizard/ProgressBar';
 import { ResumeDraftModal } from '@/components/wizard/ResumeDraftModal';
 import { StepNavigation } from '@/components/wizard/StepNavigation';
