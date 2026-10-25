@@ -1,175 +1,256 @@
-import { ChangeEvent, DragEvent, KeyboardEvent, useRef, useState } from 'react';
+import { MouseEvent, useState } from 'react';
+import { useDropzone } from 'react-dropzone';
+
+import { Badge } from '@/components/common/Badge';
+import { formatFileSize } from '@/utils/formatters';
+import compressImage from '@/utils/imageCompressor';
+
+
+import type { UploadedFileMetadata } from '@/types/loan';
+
+export type { UploadedFileMetadata };
+
 
 export interface FileUploadProps {
   label: string;
   description?: string;
-  accept?: string;
-  maxSizeMb?: number;
-  fileName?: string;
-  onFileSelect: (fileName: string, file: File) => void;
-  onFileRemove?: () => void;
-  error?: string;
   required?: boolean;
   disabled?: boolean;
+  error?: string;
+  value?: UploadedFileMetadata | null;
+  onChange: (fileData: UploadedFileMetadata | null) => void;
+  badgeText?: string;
 }
 
 export function FileUpload({
   label,
-  description = 'Supports PDF, JPG, or PNG up to 5MB',
-  accept = '.pdf,.jpg,.jpeg,.png',
-  maxSizeMb = 5,
-  fileName,
-  onFileSelect,
-  onFileRemove,
-  error,
+  description = 'Supports PDF, JPG, or PNG (Max 5MB)',
   required = false,
   disabled = false,
+  error,
+  value,
+  onChange,
+  badgeText,
 }: FileUploadProps) {
-  const [isDragging, setIsDragging] = useState(false);
-  const [localError, setLocalError] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [localError, setLocalError] = useState('');
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(100);
 
-  const processFile = (file: File) => {
-    setLocalError(null);
-    const sizeInMb = file.size / (1024 * 1024);
+  const onDrop = async (acceptedFiles: File[], fileRejections: Array<{ errors: Array<{ message: string }> }>) => {
+    setLocalError('');
 
-    if (sizeInMb > maxSizeMb) {
-      setLocalError(`File size exceeds maximum allowable limit of ${maxSizeMb}MB`);
+    if (fileRejections && fileRejections.length > 0) {
+      const rejection = fileRejections[0];
+      const errorMsg = rejection.errors[0]?.message || 'Invalid file';
+      if (errorMsg.includes('larger than')) {
+        setLocalError('File size exceeds maximum permissible limit of 5MB');
+      } else if (errorMsg.includes('file type')) {
+        setLocalError('Invalid file type. Only PDF, JPG, and PNG are allowed');
+      } else {
+        setLocalError(errorMsg);
+      }
       return;
     }
 
-    onFileSelect(file.name, file);
-  };
+    if (!acceptedFiles || acceptedFiles.length === 0) return;
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      processFile(e.target.files[0]);
+    const rawFile = acceptedFiles[0];
+    setIsProcessing(true);
+    setUploadProgress(40);
+
+    try {
+      let finalFile: File = rawFile;
+      let originalSize = rawFile.size;
+      let compressedSize = rawFile.size;
+      let isCompressed = false;
+      let previewUrl: string | null = null;
+
+      // Create preview URL for images
+      if (rawFile.type.startsWith('image/')) {
+        previewUrl = URL.createObjectURL(rawFile);
+
+        // Auto-trigger client-side image compression
+        const compressionResult = await compressImage(rawFile, {
+          maxDimension: 1200,
+          maxSizeBytes: 2 * 1024 * 1024,
+        });
+
+        if (compressionResult && compressionResult.compressedFile) {
+          finalFile = compressionResult.compressedFile;
+          compressedSize = compressionResult.compressedSize;
+          originalSize = compressionResult.originalSize;
+          isCompressed = compressedSize < originalSize;
+        }
+      }
+
+      setUploadProgress(100);
+
+      const fileData: UploadedFileMetadata = {
+        name: finalFile.name,
+        size: compressedSize,
+        type: finalFile.type,
+        previewUrl,
+        originalSize,
+        compressedSize,
+        isCompressed,
+        uploadedAt: new Date().toISOString(),
+      };
+
+      onChange(fileData);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Error processing file';
+      setLocalError(msg);
+    } finally {
+      setIsProcessing(false);
     }
   };
 
-  const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    if (!disabled) setIsDragging(true);
-  };
-
-  const handleDragLeave = () => {
-    setIsDragging(false);
-  };
-
-  const handleDrop = (e: DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    setIsDragging(false);
-    if (!disabled && e.dataTransfer.files && e.dataTransfer.files[0]) {
-      processFile(e.dataTransfer.files[0]);
+  const handleRemove = (e: MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    if (value?.previewUrl) {
+      try {
+        URL.revokeObjectURL(value.previewUrl);
+      } catch {
+        // ignore cleanup error
+      }
     }
+    setLocalError('');
+    onChange(null);
   };
 
-  const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
-    if (disabled) return;
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      fileInputRef.current?.click();
-    }
-  };
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: {
+      'application/pdf': ['.pdf'],
+      'image/jpeg': ['.jpg', '.jpeg'],
+      'image/png': ['.png'],
+    },
+    maxSize: 5 * 1024 * 1024,
+    multiple: false,
+    disabled: disabled || isProcessing,
+  });
 
   const displayError = error || localError;
+  const isPdf = value?.type === 'application/pdf' || value?.name?.toLowerCase().endsWith('.pdf');
 
   return (
-    <div className="w-full space-y-1.5">
+    <div className="w-full space-y-2">
+      {/* Label and Status Badge Header */}
       <div className="flex items-center justify-between">
-        <span className="text-sm font-medium text-neutral-700 flex items-center gap-1 select-none">
+        <label className="text-xs font-bold uppercase tracking-wider text-neutral-700 flex items-center gap-1 select-none">
           <span>{label}</span>
           {required && <span className="text-danger-500 font-bold">*</span>}
-        </span>
+        </label>
+        {badgeText && (
+          <Badge variant={required ? 'primary' : 'neutral'} size="sm">
+            {badgeText}
+          </Badge>
+        )}
       </div>
 
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept={accept}
-        onChange={handleInputChange}
-        disabled={disabled}
-        className="hidden"
-        id={`upload-${label.toLowerCase().replace(/\s+/g, '-')}`}
-      />
-
-      {fileName ? (
-        <div className="flex items-center justify-between p-3.5 bg-primary-50/50 rounded-fintech border border-primary-200">
+      {/* Uploaded State Card */}
+      {value ? (
+        <div className="flex items-center justify-between p-3.5 bg-primary-50/50 rounded-xl border border-primary-200 transition-all">
           <div className="flex items-center gap-3 overflow-hidden">
-            <div className="w-8 h-8 rounded-lg bg-primary-100 flex items-center justify-center shrink-0 text-primary-800">
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  fillRule="evenodd"
-                  d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"
-                  clipRule="evenodd"
+            {/* Thumbnail Preview or PDF Icon */}
+            <div className="w-12 h-12 rounded-lg bg-white border border-neutral-200 flex items-center justify-center shrink-0 overflow-hidden shadow-xs">
+              {isPdf ? (
+                <div className="text-center">
+                  <span className="text-[10px] font-black text-danger-600 uppercase block tracking-tighter">PDF</span>
+                  <svg className="w-4 h-4 mx-auto text-danger-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" />
+                  </svg>
+                </div>
+              ) : value.previewUrl ? (
+                <img
+                  src={value.previewUrl}
+                  alt={value.name}
+                  className="w-full h-full object-cover"
                 />
-              </svg>
+              ) : (
+                <svg className="w-6 h-6 text-primary-700" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+                </svg>
+              )}
             </div>
-            <div className="truncate">
-              <p className="text-xs font-semibold text-neutral-900 truncate">{fileName}</p>
-              <p className="text-[11px] text-success-600 font-medium">Ready for encrypted upload</p>
+
+            {/* File Metadata & Compression Badge */}
+            <div className="truncate space-y-1">
+              <p className="text-xs font-semibold text-neutral-900 truncate max-w-xs">{value.name}</p>
+              <div className="flex items-center gap-2">
+                <span className="text-[11px] text-neutral-500 font-medium">
+                  {formatFileSize(value.size)}
+                </span>
+                {value.isCompressed && value.originalSize && (
+                  <Badge variant="success" size="sm">
+                    Compressed from {formatFileSize(value.originalSize)} to {formatFileSize(value.compressedSize)}
+                  </Badge>
+                )}
+              </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          {/* Remove / Replace Actions */}
+          <div className="flex items-center gap-2 shrink-0">
             <button
               type="button"
-              onClick={() => fileInputRef.current?.click()}
-              className="text-xs text-primary-700 hover:text-primary-800 font-semibold underline px-2 py-1"
+              onClick={handleRemove}
+              className="p-1.5 text-neutral-400 hover:text-danger-600 hover:bg-white rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-danger-500"
+              aria-label={`Remove uploaded document ${label}`}
             >
-              Replace
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
             </button>
-            {onFileRemove && (
-              <button
-                type="button"
-                onClick={onFileRemove}
-                className="text-neutral-400 hover:text-danger-600 p-1"
-                aria-label="Remove uploaded file"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            )}
           </div>
         </div>
       ) : (
+        /* Dropzone Active Area */
         <div
-          role="button"
-          tabIndex={disabled ? -1 : 0}
-          onKeyDown={handleKeyDown}
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-          onDrop={handleDrop}
-          onClick={() => !disabled && fileInputRef.current?.click()}
+          {...getRootProps()}
           className={`
-            border-2 border-dashed rounded-fintech p-6 text-center cursor-pointer transition-colors duration-150
+            border-2 border-dashed rounded-xl p-5 text-center cursor-pointer transition-all duration-150
             flex flex-col items-center justify-center gap-2 select-none focus:outline-none focus:ring-2 focus:ring-primary-700
             ${
-              isDragging
-                ? 'border-primary-700 bg-primary-50/50'
+              isDragActive
+                ? 'border-primary-700 bg-primary-50/70 scale-[0.99]'
                 : displayError
                 ? 'border-danger-400 bg-danger-50/20'
-                : 'border-neutral-300 hover:border-primary-600 hover:bg-neutral-50/60'
+                : 'border-neutral-300 hover:border-primary-600 hover:bg-neutral-50/70'
             }
-            ${disabled ? 'opacity-50 cursor-not-allowed bg-neutral-100' : ''}
+            ${disabled || isProcessing ? 'opacity-50 cursor-not-allowed bg-neutral-100' : ''}
           `}
         >
-          <div className="w-10 h-10 rounded-full bg-primary-50 flex items-center justify-center text-primary-700">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-            </svg>
-          </div>
+          <input {...getInputProps()} />
 
-          <div>
-            <p className="text-sm font-semibold text-neutral-800">
-              <span className="text-primary-800 underline">Click to upload</span> or drag & drop
-            </p>
-            <p className="text-xs text-neutral-500 mt-0.5">{description}</p>
-          </div>
+          {isProcessing ? (
+            <div className="flex flex-col items-center gap-2 py-2">
+              <span className="w-6 h-6 border-2 border-primary-700 border-t-transparent rounded-full animate-spin" />
+              <p className="text-xs text-primary-800 font-semibold">Processing & compressing image...</p>
+              <div className="w-32 bg-neutral-200 rounded-full h-1.5 overflow-hidden">
+                <div className="bg-primary-700 h-1.5 rounded-full transition-all duration-300" style={{ width: `${uploadProgress}%` }} />
+              </div>
+            </div>
+          ) : (
+            <>
+              <div className="w-9 h-9 rounded-full bg-primary-100/60 flex items-center justify-center text-primary-800">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                </svg>
+              </div>
+
+              <div>
+                <p className="text-xs font-semibold text-neutral-800">
+                  <span className="text-primary-800 underline">Click to upload</span> or drag and drop
+                </p>
+                <p className="text-[11px] text-neutral-400 mt-0.5">{description}</p>
+              </div>
+            </>
+          )}
         </div>
       )}
 
+      {/* Error Message */}
       {displayError && (
         <p className="text-xs text-danger-600 font-medium flex items-center gap-1 mt-1" role="alert">
           <span>{displayError}</span>
@@ -178,3 +259,5 @@ export function FileUpload({
     </div>
   );
 }
+
+export default FileUpload;

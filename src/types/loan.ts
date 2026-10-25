@@ -143,7 +143,17 @@ export interface LoanApplicationData {
   accountHolderName: string;
   eNachAutoDebitConsent: boolean;
 
-  // Step 7: Document Verification
+  // Step 7: Document Uploads & Digital Signature Capture
+  docPanCard?: UploadedFileMetadata | null;
+  docAadhaarFront?: UploadedFileMetadata | null;
+  docAadhaarBack?: UploadedFileMetadata | null;
+  docSalarySlips?: UploadedFileMetadata | null;
+  docItrReturns?: UploadedFileMetadata | null;
+  docPropertyDocs?: UploadedFileMetadata | null;
+  docBusinessRegistration?: UploadedFileMetadata | null;
+  digitalSignature?: string;
+
+  // Step 7: Legacy Document Verification
   incomeProofType: 'salary_slip_3_months' | 'itr_acknowledgment' | 'bank_statement_6_months';
   incomeProofFileName?: string;
   bankStatementFileName?: string;
@@ -159,4 +169,16 @@ export interface LoanApplicationData {
   submissionTimestamp?: string;
 }
 
+export interface UploadedFileMetadata {
+  name: string;
+  size: number;
+  type: string;
+  previewUrl: string | null;
+  originalSize: number;
+  compressedSize: number;
+  isCompressed: boolean;
+  uploadedAt: string;
+}
+
 export type PartialLoanApplicationData = Partial<LoanApplicationData>;
+

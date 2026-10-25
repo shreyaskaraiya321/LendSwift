@@ -11,6 +11,7 @@ import { step3BaseSchema } from './step3Schema';
 import { step4BaseSchema } from './step4Schema';
 import { step5BaseSchema } from './step5Schema';
 import { step6BaseSchema as step6BaseFromStep6 } from './step6Schema';
+import { step7BaseSchema as step7BaseFromStep7 } from './step7Schema';
 
 // Common Indian mobile regex (starts with 6, 7, 8, or 9 and has 10 digits)
 const indianMobileRegex = /^[6-9]\d{9}$/;
@@ -216,20 +217,14 @@ export const step6BankBaseLegacySchema = z.object({
 });
 
 /**
- * Step 7: Document Upload Verification Schema
+ * Step 7: Document Upload Verification Schema (Legacy / Sub-schema)
  */
-export const step7Schema = z.object({
-  incomeProofType: z.enum(['salary_slip_3_months', 'itr_acknowledgment', 'bank_statement_6_months'], {
-    required_error: 'Please choose proof of income category',
-  }),
-  incomeProofFileName: z.string().min(1, 'Please upload your income proof document (PDF/JPG/PNG)'),
-  bankStatementFileName: z.string().min(1, 'Please upload recent 6 months bank statement (PDF)'),
-  selfieVerificationConsent: z.boolean().refine((val) => val === true, {
-    message: 'Live facial liveness check consent is mandatory under RBI Digital Lending Norms',
-  }),
-  geolocationConsent: z.boolean().refine((val) => val === true, {
-    message: 'Geotagging consent is required to verify origination within India',
-  }),
+export const step7LegacySchema = z.object({
+  incomeProofType: z.enum(['salary_slip_3_months', 'itr_acknowledgment', 'bank_statement_6_months']).optional(),
+  incomeProofFileName: z.string().optional(),
+  bankStatementFileName: z.string().optional(),
+  selfieVerificationConsent: z.boolean().optional(),
+  geolocationConsent: z.boolean().optional(),
 });
 
 /**
@@ -261,11 +256,13 @@ export const loanApplicationSchema = step1BaseSchema
   .merge(step4BaseSchema)
   .merge(step5BaseSchema)
   .merge(step6BaseFromStep6)
+  .merge(step7BaseFromStep7)
   .merge(step1IdentitySchema)
   .merge(step2KycSchema)
   .merge(step3EmploymentSchema)
   .merge(step4LoanRequirementSchema)
   .merge(step5AddressLegacySchema)
   .merge(step6BankBaseLegacySchema)
-  .merge(step7Schema)
+  .merge(step7LegacySchema)
   .merge(step8Schema);
+

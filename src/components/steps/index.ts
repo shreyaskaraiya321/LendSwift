@@ -11,4 +11,6 @@ export * from './Step5Employment';
 export * from './Step6BankVerification';
 export * from './Step6CoApplicant';
 export * from './Step7DocumentUpload';
+export * from './Step7Documents';
 export * from './Step8ReviewConsent';
+

@@ -9,3 +9,4 @@ export * from './step3Schema';
 export * from './step4Schema';
 export * from './step5Schema';
 export * from './step6Schema';
+export * from './step7Schema';

@@ -84,3 +84,14 @@ export function maskBankAccount(accountNumber: string | undefined): string {
   const last4 = clean.slice(-4);
   return `•••• •••• ${last4}`;
 }
+
+/**
+ * Formats bytes into human-readable size (B, KB, MB)
+ */
+export function formatFileSize(bytes?: number): string {
+  if (!bytes || bytes === 0) return '0 B';
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+}
+

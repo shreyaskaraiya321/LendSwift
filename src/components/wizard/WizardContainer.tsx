@@ -13,9 +13,10 @@ import {
   Step4Address,
   Step5Employment,
   Step6CoApplicant,
-  Step7DocumentUpload,
+  Step7Documents,
   Step8ReviewConsent,
 } from '@/components/steps';
+
 import { ProgressBar } from '@/components/wizard/ProgressBar';
 import { ResumeDraftModal } from '@/components/wizard/ResumeDraftModal';
 import { StepNavigation } from '@/components/wizard/StepNavigation';
@@ -121,11 +122,20 @@ const DEFAULT_FORM_VALUES: Partial<LoanApplicationData> = {
   bankStatementFileName: '',
   selfieVerificationConsent: false,
   geolocationConsent: false,
+  docPanCard: null,
+  docAadhaarFront: null,
+  docAadhaarBack: null,
+  docSalarySlips: null,
+  docItrReturns: null,
+  docPropertyDocs: null,
+  docBusinessRegistration: null,
+  digitalSignature: '',
   cibilScoreConsent: false,
   rbiFairPracticesConsent: false,
   privacyPolicyConsent: false,
   eSignOtpVerified: false,
 };
+
 
 export function WizardContainer() {
   const { initialData, persistedStep, hasExistingDraft, saveCurrentStep, clearPersistence } =
@@ -409,8 +419,9 @@ export function WizardContainer() {
                 {currentStep === 4 && <Step4Address />}
                 {currentStep === 5 && <Step5Employment />}
                 {currentStep === 6 && <Step6CoApplicant />}
-                {currentStep === 7 && <Step7DocumentUpload onNext={handleNextStep} onPrevious={handlePreviousStep} />}
+                {currentStep === 7 && <Step7Documents />}
                 {currentStep === 8 && <Step8ReviewConsent onNext={handleNextStep} onPrevious={handlePreviousStep} />}
+
               </div>
 
               {/* Navigation Action Bar */}

@@ -2,16 +2,15 @@ import { z, ZodTypeAny } from 'zod';
 
 import { StepNumber } from '@/types/wizard';
 
-import {
-  step7Schema,
-  step8Schema,
-} from './loanSchema';
+import { step8Schema } from './loanSchema';
 import { step1Schema } from './step1Schema';
 import { step2Schema } from './step2Schema';
 import { step3Schema } from './step3Schema';
 import { step4Schema } from './step4Schema';
 import { step5Schema } from './step5Schema';
 import { step6Schema } from './step6Schema';
+import { step7Schema } from './step7Schema';
+
 
 /**
  * Returns the exact Zod schema for validating the specified step.
@@ -111,12 +110,16 @@ export function getStepFields(step: StepNumber): string[] {
       ];
     case 7:
       return [
-        'incomeProofType',
-        'incomeProofFileName',
-        'bankStatementFileName',
-        'selfieVerificationConsent',
-        'geolocationConsent',
+        'docPanCard',
+        'docAadhaarFront',
+        'docAadhaarBack',
+        'docSalarySlips',
+        'docItrReturns',
+        'docPropertyDocs',
+        'docBusinessRegistration',
+        'digitalSignature',
       ];
+
     case 8:
       return [
         'cibilScoreConsent',
