@@ -47,19 +47,19 @@ export function isStep6Visible(formData?: StepFormData): boolean {
  */
 export const STEPS: WizardStepDefinition[] = [
   {
-    id: 'step-1-basic-details',
+    id: 'step-1-loan-type',
     stepNumber: 1,
-    title: 'Personal & Identity Details',
-    shortTitle: 'Identity',
-    description: 'PAN validation, legal name, mobile OTP, and date of birth verification.',
+    title: 'Loan Terms & Category Selection',
+    shortTitle: 'Loan Terms',
+    description: 'Loan category selection, customized amount, tenure sliders, and live EMI calculation.',
     isStepVisible: () => true,
   },
   {
-    id: 'step-2-kyc-verification',
+    id: 'step-2-personal-info',
     stepNumber: 2,
-    title: 'KYC & Aadhaar Authentication',
-    shortTitle: 'KYC',
-    description: 'UIDAI Aadhaar Verhoeff validation, CKYC registry lookup, and DigiLocker consent.',
+    title: 'Personal Information & Verification',
+    shortTitle: 'Personal Info',
+    description: 'Legal identity, age gating (21-65 yrs), parental details, and dual OTP authentication.',
     isStepVisible: () => true,
   },
   {

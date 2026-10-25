@@ -7,8 +7,8 @@ import { Badge } from '@/components/common/Badge';
 import { Button } from '@/components/common/Button';
 import { Card } from '@/components/common/Card';
 import {
-  Step1BasicDetails,
-  Step2KycVerification,
+  Step1LoanType,
+  Step2PersonalInfo,
   Step3EmploymentIncome,
   Step4LoanRequirement,
   Step5AddressDetails,
@@ -21,7 +21,7 @@ import { ResumeDraftModal } from '@/components/wizard/ResumeDraftModal';
 import { StepNavigation } from '@/components/wizard/StepNavigation';
 import { getNextVisibleStep, getPreviousVisibleStep, STEPS } from '@/components/wizard/stepRegistry';
 import { StepSummary } from '@/components/wizard/StepSummary';
-import { BASE_INTEREST_RATE, DEFAULT_LOAN_AMOUNT, DEFAULT_TENURE_MONTHS } from '@/constants/loanConstants';
+import { BASE_INTEREST_RATE, DEFAULT_TENURE_MONTHS } from '@/constants/loanConstants';
 import { useAutoSave } from '@/hooks/useAutoSave';
 import { useWizardPersistence } from '@/hooks/useWizardPersistence';
 import { loanApplicationSchema } from '@/schemas/loanSchema';
@@ -31,14 +31,24 @@ import { StepNumber } from '@/types/wizard';
 import { formatIndianCurrency } from '@/utils/formatters';
 
 const DEFAULT_FORM_VALUES: Partial<LoanApplicationData> = {
+  loanType: 'Personal',
+  loanAmount: 300000,
+  loanTenure: 36,
+  loanPurpose: 'Debt Consolidation',
+  referralCode: '',
   fullName: '',
-  panNumber: '',
-  mobileNumber: '',
-  isMobileVerified: false,
-  email: '',
+  dob: '',
   dateOfBirth: '',
   gender: 'male',
   maritalStatus: 'single',
+  fatherName: '',
+  motherName: '',
+  email: '',
+  isEmailVerified: false,
+  mobileNumber: '',
+  isMobileVerified: false,
+  alternateMobile: '',
+  panNumber: '',
   aadhaarNumber: '',
   isAadhaarVerified: false,
   digiLockerConsent: false,
@@ -49,9 +59,7 @@ const DEFAULT_FORM_VALUES: Partial<LoanApplicationData> = {
   salaryCreditMode: 'bank_transfer',
   totalWorkExperienceMonths: 36,
   existingMonthlyEmi: 0,
-  loanAmount: DEFAULT_LOAN_AMOUNT,
   tenureMonths: DEFAULT_TENURE_MONTHS,
-  loanPurpose: 'home_renovation',
   acceptedInterestRate: BASE_INTEREST_RATE,
   calculatedEmi: 11708,
   keyFactStatementAcknowledged: false,
@@ -336,8 +344,8 @@ export function WizardContainer() {
                 data-step-container="true"
                 className="min-h-[380px]"
               >
-                {currentStep === 1 && <Step1BasicDetails onNext={handleNextStep} onPrevious={handlePreviousStep} />}
-                {currentStep === 2 && <Step2KycVerification onNext={handleNextStep} onPrevious={handlePreviousStep} />}
+                {currentStep === 1 && <Step1LoanType />}
+                {currentStep === 2 && <Step2PersonalInfo />}
                 {currentStep === 3 && <Step3EmploymentIncome onNext={handleNextStep} onPrevious={handlePreviousStep} />}
                 {currentStep === 4 && <Step4LoanRequirement onNext={handleNextStep} onPrevious={handlePreviousStep} />}
                 {currentStep === 5 && <Step5AddressDetails onNext={handleNextStep} onPrevious={handlePreviousStep} />}

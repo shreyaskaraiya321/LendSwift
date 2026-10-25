@@ -1,5 +1,7 @@
 export * from './Step1BasicDetails';
+export * from './Step1LoanType';
 export * from './Step2KycVerification';
+export * from './Step2PersonalInfo';
 export * from './Step3EmploymentIncome';
 export * from './Step4LoanRequirement';
 export * from './Step5AddressDetails';

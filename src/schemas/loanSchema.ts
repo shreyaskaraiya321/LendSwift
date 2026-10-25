@@ -5,15 +5,17 @@ import { MAX_LOAN_AMOUNT, MIN_LOAN_AMOUNT } from '@/constants/loanConstants';
 import { aadhaarSchema } from './aadhaarSchema';
 import { ifscSchema } from './ifscSchema';
 import { panSchema } from './panSchema';
+import { step1BaseSchema } from './step1Schema';
+import { step2BaseSchema } from './step2Schema';
 
 // Common Indian mobile regex (starts with 6, 7, 8, or 9 and has 10 digits)
 const indianMobileRegex = /^[6-9]\d{9}$/;
 const indianPincodeRegex = /^[1-9][0-9]{5}$/;
 
 /**
- * Step 1: Personal & Primary Identity Schema
+ * Step 1: Personal & Primary Identity Schema (Legacy / Sub-schema)
  */
-export const step1Schema = z.object({
+export const step1IdentitySchema = z.object({
   fullName: z
     .string({ required_error: 'Full name as per PAN is required' })
     .trim()
@@ -60,9 +62,9 @@ export const step1Schema = z.object({
 });
 
 /**
- * Step 2: KYC & Identity Verification Schema
+ * Step 2: KYC & Identity Verification Schema (Legacy / Sub-schema)
  */
-export const step2Schema = z.object({
+export const step2KycSchema = z.object({
   aadhaarNumber: aadhaarSchema,
   isAadhaarVerified: z.boolean().refine((val) => val === true, {
     message: 'Aadhaar e-KYC authentication is required',
@@ -262,8 +264,10 @@ export const step8Schema = z.object({
 /**
  * Full Composite Loan Application Schema
  */
-export const loanApplicationSchema = step1Schema
-  .merge(step2Schema)
+export const loanApplicationSchema = step1BaseSchema
+  .merge(step2BaseSchema)
+  .merge(step1IdentitySchema)
+  .merge(step2KycSchema)
   .merge(step3Schema)
   .merge(step4Schema)
   .merge(step5Schema)

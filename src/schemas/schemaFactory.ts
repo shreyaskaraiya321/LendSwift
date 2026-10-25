@@ -3,8 +3,6 @@ import { z, ZodTypeAny } from 'zod';
 import { StepNumber } from '@/types/wizard';
 
 import {
-  step1Schema,
-  step2Schema,
   step3Schema,
   step4Schema,
   step5Schema,
@@ -12,6 +10,8 @@ import {
   step7Schema,
   step8Schema,
 } from './loanSchema';
+import { step1Schema } from './step1Schema';
+import { step2Schema } from './step2Schema';
 
 /**
  * Returns the exact Zod schema for validating the specified step.
@@ -47,21 +47,67 @@ export function getStepSchema(step: StepNumber): ZodTypeAny {
 export function getStepFields(step: StepNumber): string[] {
   switch (step) {
     case 1:
-      return ['fullName', 'panNumber', 'mobileNumber', 'isMobileVerified', 'email', 'dateOfBirth', 'gender', 'maritalStatus'];
+      return ['loanType', 'loanAmount', 'loanTenure', 'loanPurpose', 'referralCode'];
     case 2:
-      return ['aadhaarNumber', 'isAadhaarVerified', 'digiLockerConsent', 'ckycConsent'];
+      return [
+        'fullName',
+        'dob',
+        'gender',
+        'maritalStatus',
+        'fatherName',
+        'motherName',
+        'email',
+        'mobileNumber',
+        'alternateMobile',
+      ];
     case 3:
-      return ['employmentType', 'employerName', 'officialEmail', 'monthlyNetIncome', 'salaryCreditMode', 'totalWorkExperienceMonths', 'existingMonthlyEmi'];
+      return [
+        'employmentType',
+        'employerName',
+        'officialEmail',
+        'monthlyNetIncome',
+        'salaryCreditMode',
+        'totalWorkExperienceMonths',
+        'existingMonthlyEmi',
+      ];
     case 4:
-      return ['loanAmount', 'tenureMonths', 'loanPurpose', 'customPurposeDetails', 'acceptedInterestRate', 'calculatedEmi', 'keyFactStatementAcknowledged'];
+      return [
+        'loanAmount',
+        'tenureMonths',
+        'loanPurpose',
+        'customPurposeDetails',
+        'acceptedInterestRate',
+        'calculatedEmi',
+        'keyFactStatementAcknowledged',
+      ];
     case 5:
       return ['currentAddress', 'isPermanentSameAsCurrent', 'permanentAddress'];
     case 6:
-      return ['bankAccountNumber', 'confirmBankAccountNumber', 'ifscCode', 'bankName', 'branchName', 'accountType', 'accountHolderName', 'eNachAutoDebitConsent'];
+      return [
+        'bankAccountNumber',
+        'confirmBankAccountNumber',
+        'ifscCode',
+        'bankName',
+        'branchName',
+        'accountType',
+        'accountHolderName',
+        'eNachAutoDebitConsent',
+      ];
     case 7:
-      return ['incomeProofType', 'incomeProofFileName', 'bankStatementFileName', 'selfieVerificationConsent', 'geolocationConsent'];
+      return [
+        'incomeProofType',
+        'incomeProofFileName',
+        'bankStatementFileName',
+        'selfieVerificationConsent',
+        'geolocationConsent',
+      ];
     case 8:
-      return ['cibilScoreConsent', 'rbiFairPracticesConsent', 'privacyPolicyConsent', 'eSignOtpVerified'];
+      return [
+        'cibilScoreConsent',
+        'rbiFairPracticesConsent',
+        'privacyPolicyConsent',
+        'eSignOtpVerified',
+      ];
     default:
       return [];
   }

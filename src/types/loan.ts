@@ -33,15 +33,27 @@ export interface AddressData {
 }
 
 export interface LoanApplicationData {
-  // Step 1: Personal & Basic Details
+  // Step 1: Loan Terms & Type
+  loanType?: 'Personal' | 'Home' | 'Business';
+  loanAmount: number;
+  loanTenure?: number;
+  loanPurpose: LoanPurpose | string;
+  referralCode?: string;
+
+  // Step 2: Personal & Identity Details
   fullName: string;
-  panNumber: string;
-  mobileNumber: string;
-  isMobileVerified: boolean;
-  email: string;
-  dateOfBirth: string; // YYYY-MM-DD
+  dob?: string; // YYYY-MM-DD
+  dateOfBirth?: string; // YYYY-MM-DD
   gender: Gender;
   maritalStatus: MaritalStatus;
+  fatherName?: string;
+  motherName?: string;
+  email: string;
+  isEmailVerified?: boolean;
+  mobileNumber: string;
+  isMobileVerified: boolean;
+  alternateMobile?: string;
+  panNumber: string;
 
   // Step 2: Identity & KYC
   aadhaarNumber: string;
@@ -60,9 +72,7 @@ export interface LoanApplicationData {
   existingMonthlyEmi: number;
 
   // Step 4: Loan Requirement & Terms
-  loanAmount: number;
   tenureMonths: number;
-  loanPurpose: LoanPurpose;
   customPurposeDetails?: string;
   acceptedInterestRate: number;
   calculatedEmi: number;
