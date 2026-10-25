@@ -1,4 +1,10 @@
-export type EmploymentType = 'salaried' | 'self_employed_professional' | 'business_owner';
+export type EmploymentType =
+  | 'Salaried'
+  | 'Self-Employed'
+  | 'Business Owner'
+  | 'salaried'
+  | 'self_employed_professional'
+  | 'business_owner';
 
 export type SalaryMode = 'bank_transfer' | 'cheque' | 'cash';
 
@@ -85,14 +91,35 @@ export interface LoanApplicationData {
   permanentCity?: string;
   permanentState?: string;
 
-  // Step 3: Employment & Income
+  // Step 5: Dynamic Employment Details (Discriminated Union)
   employmentType: EmploymentType;
-  employerName: string;
+  companyName?: string;
+  designation?: string;
+  monthlyNetSalary?: number;
+  yearsOfExperience?: number;
+  businessName?: string;
+  businessType?: string;
+  annualTurnover?: number;
+  yearsInBusiness?: number;
+  monthlyIncome?: number;
+  gstNumber?: string;
+  businessAddress?: string;
+
+  // Step 6: Co-Applicant Verification
+  coApplicantName?: string;
+  relationship?: 'Spouse' | 'Parent' | 'Sibling' | 'Business Partner';
+  coApplicantPan?: string;
+  coApplicantIncome?: number;
+  coApplicantConsent?: boolean;
+  isCoApplicantPanVerified?: boolean;
+
+  // Legacy Employment & Income fields
+  employerName?: string;
   officialEmail?: string;
   monthlyNetIncome: number;
-  salaryCreditMode: SalaryMode;
-  totalWorkExperienceMonths: number;
-  existingMonthlyEmi: number;
+  salaryCreditMode?: SalaryMode;
+  totalWorkExperienceMonths?: number;
+  existingMonthlyEmi?: number;
 
   // Step 4: Loan Requirement & Terms
   tenureMonths: number;

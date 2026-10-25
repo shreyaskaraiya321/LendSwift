@@ -17,7 +17,7 @@ export function StepSummary({ formData, className = '' }: StepSummaryProps) {
   const computedEmi = calculateEmi(loanAmount, interestRate, tenureMonths);
 
   const isKycComplete = Boolean(formData.isPanVerified && formData.isAadhaarVerified);
-  const isIncomeProvided = Boolean(formData.monthlyNetIncome);
+  const isIncomeProvided = Boolean(formData.monthlyNetSalary || formData.monthlyIncome || formData.monthlyNetIncome);
 
   return (
     <aside aria-label="Loan Application Summary" className={`w-full lg:w-80 shrink-0 ${className}`}>

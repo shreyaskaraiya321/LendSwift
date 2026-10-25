@@ -230,3 +230,81 @@ export function lookupPinCode(pincode: string): PinCodeRecord | null {
   const match = PIN_CODE_DATA.find((entry) => entry.pincode === sanitized);
   return match || null;
 }
+
+/**
+ * ============================================================================
+ * 4. GSTIN (Goods and Services Tax Identification Number) Validation
+ * ============================================================================
+ */
+
+export const GSTIN_REGEX = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+
+export interface GstinValidationResult {
+  isValid: boolean;
+  stateCode: string | null;
+  pan: string | null;
+  error: string | null;
+}
+
+/**
+ * Validates a 15-character Indian GSTIN format with state code and embedded PAN structure.
+ */
+export function validateGSTIN(gstin: string): GstinValidationResult {
+  if (!gstin || typeof gstin !== 'string') {
+    return {
+      isValid: false,
+      stateCode: null,
+      pan: null,
+      error: 'GSTIN is required and must be a valid string',
+    };
+  }
+
+  const normalized = gstin.trim().toUpperCase();
+
+  if (normalized.length !== 15) {
+    return {
+      isValid: false,
+      stateCode: null,
+      pan: null,
+      error: 'GSTIN must be exactly 15 characters long',
+    };
+  }
+
+  if (!GSTIN_REGEX.test(normalized)) {
+    return {
+      isValid: false,
+      stateCode: null,
+      pan: null,
+      error: 'Invalid GSTIN format. Expected 2-digit state code, 10-char PAN, 1-char entity number, "Z", and 1 check digit (e.g. 27ABCDE1234F1Z5)',
+    };
+  }
+
+  const stateCodeNum = parseInt(normalized.slice(0, 2), 10);
+  const isValidState = (stateCodeNum >= 1 && stateCodeNum <= 38) || stateCodeNum === 97 || stateCodeNum === 99;
+
+  if (!isValidState) {
+    return {
+      isValid: false,
+      stateCode: normalized.slice(0, 2),
+      pan: null,
+      error: `Invalid GST state code "${normalized.slice(0, 2)}". Must be between 01 and 38, or 97/99`,
+    };
+  }
+
+  const embeddedPan = normalized.slice(2, 12);
+  if (!PAN_REGEX.test(embeddedPan)) {
+    return {
+      isValid: false,
+      stateCode: normalized.slice(0, 2),
+      pan: embeddedPan,
+      error: `Embedded PAN "${embeddedPan}" in GSTIN is invalid`,
+    };
+  }
+
+  return {
+    isValid: true,
+    stateCode: normalized.slice(0, 2),
+    pan: embeddedPan,
+    error: null,
+  };
+}

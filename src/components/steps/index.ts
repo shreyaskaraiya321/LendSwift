@@ -7,6 +7,8 @@ export * from './Step3KYC';
 export * from './Step4Address';
 export * from './Step4LoanRequirement';
 export * from './Step5AddressDetails';
+export * from './Step5Employment';
 export * from './Step6BankVerification';
+export * from './Step6CoApplicant';
 export * from './Step7DocumentUpload';
 export * from './Step8ReviewConsent';

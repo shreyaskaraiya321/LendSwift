@@ -9,6 +9,8 @@ import { step1BaseSchema } from './step1Schema';
 import { step2BaseSchema } from './step2Schema';
 import { step3BaseSchema } from './step3Schema';
 import { step4BaseSchema } from './step4Schema';
+import { step5BaseSchema } from './step5Schema';
+import { step6BaseSchema as step6BaseFromStep6 } from './step6Schema';
 
 // Common Indian mobile regex (starts with 6, 7, 8, or 9 and has 10 digits)
 const indianMobileRegex = /^[6-9]\d{9}$/;
@@ -180,51 +182,38 @@ const addressSubSchema = z.object({
 });
 
 /**
- * Step 5: Residential Address Schema
+ * Step 5: Residential Address Schema (Legacy / Sub-schema)
  */
-export const step5Schema = z.object({
-  currentAddress: addressSubSchema,
-  isPermanentSameAsCurrent: z.boolean(),
+export const step5AddressLegacySchema = z.object({
+  currentAddress: addressSubSchema.optional(),
+  isPermanentSameAsCurrent: z.boolean().optional(),
   permanentAddress: addressSubSchema.optional(),
 });
 
 /**
- * Step 6: Bank Account & Disbursal Base Schema
+ * Step 6: Bank Account & Disbursal Base Schema (Legacy / Sub-schema)
  */
-export const step6BaseSchema = z.object({
+export const step6BankBaseLegacySchema = z.object({
   bankAccountNumber: z
     .string({ required_error: 'Bank account number is required' })
     .trim()
     .min(9, 'Bank account must be between 9 and 18 digits')
     .max(18, 'Bank account cannot exceed 18 digits')
-    .regex(/^\d+$/, 'Account number must contain only numbers'),
+    .regex(/^\d+$/, 'Account number must contain only numbers')
+    .optional()
+    .or(z.literal('')),
   confirmBankAccountNumber: z
-    .string({ required_error: 'Please confirm bank account number' })
-    .trim(),
-  ifscCode: ifscSchema,
-  bankName: z.string().min(2, 'Bank name is required'),
-  branchName: z.string().min(2, 'Branch name is required'),
-  accountType: z.enum(['savings', 'current'], {
-    required_error: 'Select account type',
-  }),
-  accountHolderName: z
-    .string({ required_error: 'Account holder name is required' })
-    .min(3, 'Name must match PAN card name'),
-  eNachAutoDebitConsent: z.boolean().refine((val) => val === true, {
-    message: 'e-NACH / Auto-Debit mandate setup consent is required for loan disbursal',
-  }),
+    .string()
+    .trim()
+    .optional()
+    .or(z.literal('')),
+  ifscCode: ifscSchema.optional().or(z.literal('')),
+  bankName: z.string().optional().or(z.literal('')),
+  branchName: z.string().optional().or(z.literal('')),
+  accountType: z.enum(['savings', 'current']).optional(),
+  accountHolderName: z.string().optional().or(z.literal('')),
+  eNachAutoDebitConsent: z.boolean().optional(),
 });
-
-/**
- * Step 6: With confirmation matching refinement
- */
-export const step6Schema = step6BaseSchema.refine(
-  (data) => data.bankAccountNumber === data.confirmBankAccountNumber,
-  {
-    message: 'Bank account numbers do not match',
-    path: ['confirmBankAccountNumber'],
-  }
-);
 
 /**
  * Step 7: Document Upload Verification Schema
@@ -270,15 +259,13 @@ export const loanApplicationSchema = step1BaseSchema
   .merge(step2BaseSchema)
   .merge(step3BaseSchema)
   .merge(step4BaseSchema)
+  .merge(step5BaseSchema)
+  .merge(step6BaseFromStep6)
   .merge(step1IdentitySchema)
   .merge(step2KycSchema)
   .merge(step3EmploymentSchema)
   .merge(step4LoanRequirementSchema)
-  .merge(step5Schema)
-  .merge(step6BaseSchema)
+  .merge(step5AddressLegacySchema)
+  .merge(step6BankBaseLegacySchema)
   .merge(step7Schema)
-  .merge(step8Schema)
-  .refine((data) => data.bankAccountNumber === data.confirmBankAccountNumber, {
-    message: 'Bank account numbers do not match',
-    path: ['confirmBankAccountNumber'],
-  });
+  .merge(step8Schema);

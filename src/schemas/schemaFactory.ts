@@ -3,8 +3,6 @@ import { z, ZodTypeAny } from 'zod';
 import { StepNumber } from '@/types/wizard';
 
 import {
-  step5Schema,
-  step6Schema,
   step7Schema,
   step8Schema,
 } from './loanSchema';
@@ -12,6 +10,8 @@ import { step1Schema } from './step1Schema';
 import { step2Schema } from './step2Schema';
 import { step3Schema } from './step3Schema';
 import { step4Schema } from './step4Schema';
+import { step5Schema } from './step5Schema';
+import { step6Schema } from './step6Schema';
 
 /**
  * Returns the exact Zod schema for validating the specified step.
@@ -87,17 +87,27 @@ export function getStepFields(step: StepNumber): string[] {
         'permanentState',
       ];
     case 5:
-      return ['employmentType', 'employerName', 'officialEmail', 'monthlyNetIncome', 'salaryCreditMode', 'totalWorkExperienceMonths', 'existingMonthlyEmi'];
+      return [
+        'employmentType',
+        'companyName',
+        'designation',
+        'monthlyNetSalary',
+        'yearsOfExperience',
+        'businessName',
+        'businessType',
+        'annualTurnover',
+        'yearsInBusiness',
+        'monthlyIncome',
+        'gstNumber',
+        'businessAddress',
+      ];
     case 6:
       return [
-        'bankAccountNumber',
-        'confirmBankAccountNumber',
-        'ifscCode',
-        'bankName',
-        'branchName',
-        'accountType',
-        'accountHolderName',
-        'eNachAutoDebitConsent',
+        'coApplicantName',
+        'relationship',
+        'coApplicantPan',
+        'coApplicantIncome',
+        'coApplicantConsent',
       ];
     case 7:
       return [

@@ -9,10 +9,10 @@ import { Card } from '@/components/common/Card';
 import {
   Step1LoanType,
   Step2PersonalInfo,
-  Step3EmploymentIncome,
   Step3KYC,
   Step4Address,
-  Step6BankVerification,
+  Step5Employment,
+  Step6CoApplicant,
   Step7DocumentUpload,
   Step8ReviewConsent,
 } from '@/components/steps';
@@ -70,9 +70,26 @@ const DEFAULT_FORM_VALUES: Partial<LoanApplicationData> = {
   permanentPincode: '',
   permanentCity: '',
   permanentState: '',
+  employmentType: 'Salaried',
+  companyName: '',
+  designation: '',
+  monthlyNetSalary: undefined,
+  yearsOfExperience: undefined,
+  businessName: '',
+  businessType: '',
+  annualTurnover: undefined,
+  yearsInBusiness: undefined,
+  monthlyIncome: undefined,
+  gstNumber: '',
+  businessAddress: '',
+  coApplicantName: '',
+  relationship: 'Spouse',
+  coApplicantPan: '',
+  coApplicantIncome: undefined,
+  coApplicantConsent: false,
+  isCoApplicantPanVerified: false,
   digiLockerConsent: false,
   ckycConsent: false,
-  employmentType: 'salaried',
   employerName: '',
   monthlyNetIncome: 75000,
   salaryCreditMode: 'bank_transfer',
@@ -390,8 +407,8 @@ export function WizardContainer() {
                 {currentStep === 2 && <Step2PersonalInfo />}
                 {currentStep === 3 && <Step3KYC />}
                 {currentStep === 4 && <Step4Address />}
-                {currentStep === 5 && <Step3EmploymentIncome onNext={handleNextStep} onPrevious={handlePreviousStep} />}
-                {currentStep === 6 && <Step6BankVerification onNext={handleNextStep} onPrevious={handlePreviousStep} />}
+                {currentStep === 5 && <Step5Employment />}
+                {currentStep === 6 && <Step6CoApplicant />}
                 {currentStep === 7 && <Step7DocumentUpload onNext={handleNextStep} onPrevious={handlePreviousStep} />}
                 {currentStep === 8 && <Step8ReviewConsent onNext={handleNextStep} onPrevious={handlePreviousStep} />}
               </div>
