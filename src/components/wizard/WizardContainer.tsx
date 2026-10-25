@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
@@ -16,10 +16,12 @@ import {
   Step7DocumentUpload,
   Step8ReviewConsent,
 } from '@/components/steps';
-import { StepIndicator } from '@/components/wizard/StepIndicator';
+import { ProgressBar } from '@/components/wizard/ProgressBar';
+import { ResumeDraftModal } from '@/components/wizard/ResumeDraftModal';
 import { StepNavigation } from '@/components/wizard/StepNavigation';
+import { getNextVisibleStep, getPreviousVisibleStep, STEPS } from '@/components/wizard/stepRegistry';
 import { StepSummary } from '@/components/wizard/StepSummary';
-import { BASE_INTEREST_RATE, DEFAULT_LOAN_AMOUNT, DEFAULT_TENURE_MONTHS, STEPS_CONFIG } from '@/constants/loanConstants';
+import { BASE_INTEREST_RATE, DEFAULT_LOAN_AMOUNT, DEFAULT_TENURE_MONTHS } from '@/constants/loanConstants';
 import { useAutoSave } from '@/hooks/useAutoSave';
 import { useWizardPersistence } from '@/hooks/useWizardPersistence';
 import { loanApplicationSchema } from '@/schemas/loanSchema';
@@ -90,6 +92,9 @@ export function WizardContainer() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [submissionReference, setSubmissionReference] = useState<string>('');
+  const [showResumeModal, setShowResumeModal] = useState(false);
+
+  const stepContainerRef = useRef<HTMLDivElement>(null);
 
   const methods = useForm<LoanApplicationData>({
     resolver: zodResolver(loanApplicationSchema),
@@ -100,19 +105,12 @@ export function WizardContainer() {
   const { trigger, reset, getValues, watch } = methods;
   const formData = watch();
 
-  // Restore draft when available
+  // Prompt user with ResumeDraftModal if existing draft detected
   useEffect(() => {
-    if (initialData) {
-      reset({ ...DEFAULT_FORM_VALUES, ...initialData } as LoanApplicationData);
-      setCurrentStep(persistedStep);
-      // Mark preceding steps as completed
-      const restoredCompleted = new Set<StepNumber>();
-      for (let i = 1; i < persistedStep; i++) {
-        restoredCompleted.add(i as StepNumber);
-      }
-      setCompletedSteps(restoredCompleted);
+    if (hasExistingDraft && initialData && persistedStep > 1) {
+      setShowResumeModal(true);
     }
-  }, [initialData, persistedStep, reset]);
+  }, [hasExistingDraft, initialData, persistedStep]);
 
   // Debounced auto-save hook
   const { autoSaveState, clearDraft, forceSave } = useAutoSave(formData, {
@@ -120,7 +118,30 @@ export function WizardContainer() {
     debounceMs: 1000,
   });
 
+  const handleResumeDraft = () => {
+    if (initialData) {
+      reset({ ...DEFAULT_FORM_VALUES, ...initialData } as LoanApplicationData);
+      setCurrentStep(persistedStep);
+      const restoredCompleted = new Set<StepNumber>();
+      for (let i = 1; i < persistedStep; i++) {
+        restoredCompleted.add(i as StepNumber);
+      }
+      setCompletedSteps(restoredCompleted);
+    }
+    setShowResumeModal(false);
+  };
+
+  const handleStartFresh = () => {
+    clearPersistence();
+    clearDraft();
+    reset(DEFAULT_FORM_VALUES as LoanApplicationData);
+    setCurrentStep(1);
+    setCompletedSteps(new Set());
+    setShowResumeModal(false);
+  };
+
   const handleNextStep = async () => {
+    if (isSubmitting) return;
     setIsSubmitting(true);
     const fieldsToValidate = getStepFields(currentStep) as (keyof LoanApplicationData)[];
     const isStepValid = await trigger(fieldsToValidate);
@@ -133,9 +154,9 @@ export function WizardContainer() {
     setCompletedSteps((prev) => new Set(prev).add(currentStep));
 
     if (currentStep < 8) {
-      const next = (currentStep + 1) as StepNumber;
-      setCurrentStep(next);
-      saveCurrentStep(next);
+      const nextStep = getNextVisibleStep(currentStep, formData) as StepNumber;
+      setCurrentStep(nextStep);
+      saveCurrentStep(nextStep);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
       // Step 8 Final Submission
@@ -151,20 +172,23 @@ export function WizardContainer() {
   };
 
   const handlePreviousStep = () => {
+    if (isSubmitting) return;
     if (currentStep > 1) {
-      const prev = (currentStep - 1) as StepNumber;
-      setCurrentStep(prev);
-      saveCurrentStep(prev);
+      const prevStep = getPreviousVisibleStep(currentStep, formData) as StepNumber;
+      setCurrentStep(prevStep);
+      saveCurrentStep(prevStep);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
-  const handleStepClick = async (targetStep: StepNumber) => {
-    if (targetStep < currentStep) {
-      setCurrentStep(targetStep);
-      saveCurrentStep(targetStep);
+  const handleStepClick = async (targetStep: number) => {
+    if (isSubmitting) return;
+    const target = targetStep as StepNumber;
+    if (target < currentStep) {
+      setCurrentStep(target);
+      saveCurrentStep(target);
       window.scrollTo({ top: 0, behavior: 'smooth' });
-    } else if (targetStep === currentStep + 1) {
+    } else if (target === currentStep + 1) {
       await handleNextStep();
     }
   };
@@ -248,13 +272,24 @@ export function WizardContainer() {
     );
   }
 
-  const currentMetadata = STEPS_CONFIG[currentStep - 1];
+  const currentMetadata = STEPS[currentStep - 1] || STEPS[0];
 
   return (
     <FormProvider {...methods}>
+      {/* Resume Draft Accessible Modal Dialog */}
+      <ResumeDraftModal
+        isOpen={showResumeModal}
+        stepNumber={persistedStep}
+        stepTitle={STEPS.find((s) => s.stepNumber === persistedStep)?.title}
+        lastSaved={autoSaveState.lastSavedAt}
+        loanType={formData.loanPurpose}
+        onResume={handleResumeDraft}
+        onStartFresh={handleStartFresh}
+      />
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         {/* Draft Notice if resumed */}
-        {hasExistingDraft && autoSaveState.lastSavedAt && (
+        {hasExistingDraft && autoSaveState.lastSavedAt && !showResumeModal && (
           <Alert
             variant="info"
             title="Application Draft Restored"
@@ -272,10 +307,12 @@ export function WizardContainer() {
           </Alert>
         )}
 
-        {/* Stepper Indicator */}
-        <StepIndicator
+        {/* Accessible Progress Bar */}
+        <ProgressBar
           currentStep={currentStep}
+          totalSteps={8}
           completedSteps={completedSteps}
+          formData={formData}
           onStepClick={handleStepClick}
         />
 
@@ -286,15 +323,19 @@ export function WizardContainer() {
             <Card className="p-6 sm:p-8">
               <div className="mb-6 flex items-center justify-between">
                 <span className="text-xs font-bold text-primary-800 uppercase tracking-wider">
-                  {currentMetadata.category} Assessment
+                  {currentMetadata.shortTitle} Assessment
                 </span>
                 <span className="text-xs text-neutral-400 font-medium">
-                  Step {currentStep} of {STEPS_CONFIG.length}
+                  Step {currentStep} of {STEPS.length}
                 </span>
               </div>
 
-              {/* Step Dynamic Views */}
-              <div className="min-h-[380px]">
+              {/* Step Dynamic Views with data-step-container for focus management */}
+              <div
+                ref={stepContainerRef}
+                data-step-container="true"
+                className="min-h-[380px]"
+              >
                 {currentStep === 1 && <Step1BasicDetails onNext={handleNextStep} onPrevious={handlePreviousStep} />}
                 {currentStep === 2 && <Step2KycVerification onNext={handleNextStep} onPrevious={handlePreviousStep} />}
                 {currentStep === 3 && <Step3EmploymentIncome onNext={handleNextStep} onPrevious={handlePreviousStep} />}
@@ -308,12 +349,13 @@ export function WizardContainer() {
               {/* Navigation Action Bar */}
               <StepNavigation
                 currentStep={currentStep}
-                totalSteps={STEPS_CONFIG.length}
+                totalSteps={STEPS.length}
                 onPrevious={handlePreviousStep}
                 onNext={handleNextStep}
                 onSaveDraft={forceSave}
                 isSubmitting={isSubmitting}
                 autoSaveState={autoSaveState}
+                stepContainerRef={stepContainerRef}
               />
             </Card>
           </main>
@@ -325,3 +367,5 @@ export function WizardContainer() {
     </FormProvider>
   );
 }
+
+export default WizardContainer;
