@@ -32,6 +32,7 @@ export const DEFAULT_LOAN_RATES = {
 export const MIN_PROCESSING_FEE = 2000;
 export const MAX_PROCESSING_FEE = 25000;
 export const PROCESSING_FEE_PERCENT = 1.0;
+export const GST_RATE = 0.18;
 
 /**
  * Calculates standard Equated Monthly Installment (EMI) using the reducing-balance method:
@@ -136,6 +137,88 @@ export function calculateLoanDetails(principal, annualRatePercent, tenureMonths)
   };
 }
 
+/**
+ * Generates a full month-by-month amortization schedule for loan transparency.
+ *
+ * @param {number} principal
+ * @param {number} annualRatePercent
+ * @param {number} tenureMonths
+ * @returns {Array} Amortization schedule by month
+ */
+export function calculateAmortizationSchedule(principal, annualRatePercent, tenureMonths) {
+  const schedule = [];
+  const emi = calculateEmi(principal, annualRatePercent, tenureMonths);
+  const monthlyRate = annualRatePercent / (12 * 100);
+
+  let remainingPrincipal = principal;
+
+  for (let month = 1; month <= tenureMonths; month++) {
+    const interestComponent = Math.round(remainingPrincipal * monthlyRate);
+    let principalComponent = emi - interestComponent;
+
+    // Adjust final month rounding differences
+    if (month === tenureMonths || principalComponent > remainingPrincipal) {
+      principalComponent = remainingPrincipal;
+    }
+
+    const closingPrincipal = Math.max(0, remainingPrincipal - principalComponent);
+
+    schedule.push({
+      monthNumber: month,
+      openingPrincipal: remainingPrincipal,
+      emi: principalComponent + interestComponent,
+      principalComponent,
+      interestComponent,
+      closingPrincipal,
+    });
+
+    remainingPrincipal = closingPrincipal;
+    if (remainingPrincipal <= 0) break;
+  }
+
+  return schedule;
+}
+
+/**
+ * Computes RBI Compliant Key Fact Statement (KFS) including upfront processing fee,
+ * GST, Net Disbursal, and Effective APR (Annual Percentage Rate).
+ *
+ * @param {number} principal
+ * @param {number} annualInterestRate
+ * @param {number} tenureMonths
+ * @returns {object}
+ */
+export function calculateKeyFactStatement(principal, annualInterestRate, tenureMonths) {
+  const monthlyEmi = calculateEmi(principal, annualInterestRate, tenureMonths);
+  const totalAmountPayable = monthlyEmi * tenureMonths;
+  const totalInterestAmount = Math.max(0, totalAmountPayable - principal);
+
+  const processingFeeAmount = calculateProcessingFee(principal);
+  const gstOnProcessingFee = Math.round(processingFeeAmount * GST_RATE);
+  const totalProcessingCharges = processingFeeAmount + gstOnProcessingFee;
+  const netDisbursalAmount = principal - totalProcessingCharges;
+
+  // Approximate Annual Percentage Rate (APR) = ((Total Charges + Total Interest) / Principal) / (Tenure / 12) * 100
+  const totalCostOfCredit = totalInterestAmount + totalProcessingCharges;
+  const years = tenureMonths / 12;
+  const effectiveApr =
+    years > 0 ? Number(((totalCostOfCredit / principal / years) * 100).toFixed(2)) : annualInterestRate;
+
+  return {
+    principalAmount: principal,
+    annualInterestRate,
+    tenureMonths,
+    monthlyEmi,
+    totalInterestAmount,
+    processingFeeAmount,
+    gstOnProcessingFee,
+    totalProcessingCharges,
+    netDisbursalAmount,
+    totalAmountPayable,
+    effectiveApr,
+  };
+}
+
 export default {
   calculateEmi,
   calculateEMI,
@@ -143,6 +226,8 @@ export default {
   calculateProcessingFee,
   isAffordable,
   calculateLoanDetails,
+  calculateAmortizationSchedule,
+  calculateKeyFactStatement,
   PERSONAL_LOAN_RATE,
   HOME_LOAN_RATE,
   BUSINESS_LOAN_RATE,
@@ -153,4 +238,5 @@ export default {
   MIN_PROCESSING_FEE,
   MAX_PROCESSING_FEE,
   PROCESSING_FEE_PERCENT,
+  GST_RATE,
 };
