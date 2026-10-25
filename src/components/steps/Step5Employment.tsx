@@ -127,7 +127,7 @@ export function Step5Employment() {
             disabled={isBusinessLoan}
             onClick={() => handleTypeChange('Salaried')}
             className={`
-              p-4 rounded-xl border text-left transition-all relative flex flex-col justify-between
+              p-4 rounded-xl border text-left transition-all relative flex flex-col justify-between focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-700
               ${isBusinessLoan ? 'opacity-40 cursor-not-allowed bg-neutral-100 border-neutral-300' : 'cursor-pointer hover:border-primary-400'}
               ${employmentType === 'Salaried' ? 'bg-primary-50/70 border-primary-700 ring-2 ring-primary-700/20 shadow-sm' : 'bg-white border-neutral-200'}
             `}
@@ -139,7 +139,7 @@ export function Step5Employment() {
                   <span className="w-2.5 h-2.5 rounded-full bg-primary-700" />
                 )}
               </div>
-              <p className="text-xs text-neutral-500 leading-relaxed">
+              <p className="text-xs text-neutral-600 leading-relaxed">
                 Corporate, MNC, Govt, or Private sector employees with fixed monthly salary.
               </p>
             </div>
@@ -157,7 +157,7 @@ export function Step5Employment() {
             aria-checked={employmentType === 'Self-Employed'}
             onClick={() => handleTypeChange('Self-Employed')}
             className={`
-              p-4 rounded-xl border text-left transition-all relative flex flex-col justify-between cursor-pointer hover:border-primary-400
+              p-4 rounded-xl border text-left transition-all relative flex flex-col justify-between cursor-pointer hover:border-primary-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-700
               ${employmentType === 'Self-Employed' ? 'bg-primary-50/70 border-primary-700 ring-2 ring-primary-700/20 shadow-sm' : 'bg-white border-neutral-200'}
             `}
           >
@@ -168,7 +168,7 @@ export function Step5Employment() {
                   <span className="w-2.5 h-2.5 rounded-full bg-primary-700" />
                 )}
               </div>
-              <p className="text-xs text-neutral-500 leading-relaxed">
+              <p className="text-xs text-neutral-600 leading-relaxed">
                 Doctors, Lawyers, CAs, Consultants, Freelancers, or Solo practitioners.
               </p>
             </div>
@@ -181,7 +181,7 @@ export function Step5Employment() {
             aria-checked={employmentType === 'Business Owner'}
             onClick={() => handleTypeChange('Business Owner')}
             className={`
-              p-4 rounded-xl border text-left transition-all relative flex flex-col justify-between cursor-pointer hover:border-primary-400
+              p-4 rounded-xl border text-left transition-all relative flex flex-col justify-between cursor-pointer hover:border-primary-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-700
               ${employmentType === 'Business Owner' ? 'bg-primary-50/70 border-primary-700 ring-2 ring-primary-700/20 shadow-sm' : 'bg-white border-neutral-200'}
             `}
           >
@@ -192,7 +192,7 @@ export function Step5Employment() {
                   <span className="w-2.5 h-2.5 rounded-full bg-primary-700" />
                 )}
               </div>
-              <p className="text-xs text-neutral-500 leading-relaxed">
+              <p className="text-xs text-neutral-600 leading-relaxed">
                 Enterprises, Traders, LLP, Pvt Ltd with GSTIN & business premises.
               </p>
             </div>
@@ -200,7 +200,7 @@ export function Step5Employment() {
         </div>
 
         {errors.employmentType && (
-          <p className="text-xs text-danger-600 font-medium mt-2" role="alert">
+          <p id="employmentType-error" className="text-xs text-danger-600 font-medium mt-2" role="alert">
             {errors.employmentType.message}
           </p>
         )}
@@ -226,10 +226,12 @@ export function Step5Employment() {
                 type="text"
                 placeholder="e.g. Tata Consultancy Services"
                 {...register('companyName')}
+                aria-invalid={Boolean(errors.companyName)}
+                aria-describedby={errors.companyName ? 'companyName-error' : undefined}
                 className="w-full px-3.5 py-2.5 bg-white border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-700"
               />
               {errors.companyName && (
-                <p className="text-xs text-danger-600 font-medium mt-1" role="alert">
+                <p id="companyName-error" className="text-xs text-danger-600 font-medium mt-1" role="alert">
                   {errors.companyName.message}
                 </p>
               )}
@@ -245,10 +247,12 @@ export function Step5Employment() {
                 type="text"
                 placeholder="e.g. Senior Software Engineer"
                 {...register('designation')}
+                aria-invalid={Boolean(errors.designation)}
+                aria-describedby={errors.designation ? 'designation-error' : undefined}
                 className="w-full px-3.5 py-2.5 bg-white border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-700"
               />
               {errors.designation && (
-                <p className="text-xs text-danger-600 font-medium mt-1" role="alert">
+                <p id="designation-error" className="text-xs text-danger-600 font-medium mt-1" role="alert">
                   {errors.designation.message}
                 </p>
               )}
@@ -260,20 +264,22 @@ export function Step5Employment() {
                 Monthly Net In-Hand Salary <span className="text-danger-500">*</span>
               </label>
               <div className="relative">
-                <span className="absolute left-3.5 top-2.5 text-neutral-500 font-bold text-sm">₹</span>
+                <span className="absolute left-3.5 top-2.5 text-neutral-600 font-bold text-sm">₹</span>
                 <input
                   id="monthlyNetSalary"
                   type="number"
                   placeholder="e.g. 85000"
                   {...register('monthlyNetSalary')}
+                  aria-invalid={Boolean(errors.monthlyNetSalary)}
+                  aria-describedby={errors.monthlyNetSalary ? 'monthlyNetSalary-error' : 'monthlyNetSalary-desc'}
                   className="w-full pl-8 pr-3.5 py-2.5 bg-white border border-neutral-300 rounded-lg text-sm font-bold text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-700"
                 />
               </div>
-              <span className="text-[11px] text-neutral-400 mt-1 block">
+              <span id="monthlyNetSalary-desc" className="text-[11px] text-neutral-600 mt-1 block">
                 Minimum net salary of ₹15,000 required for LendSwift personal loans.
               </span>
               {errors.monthlyNetSalary && (
-                <p className="text-xs text-danger-600 font-medium mt-1" role="alert">
+                <p id="monthlyNetSalary-error" className="text-xs text-danger-600 font-medium mt-1" role="alert">
                   {errors.monthlyNetSalary.message}
                 </p>
               )}
@@ -292,10 +298,12 @@ export function Step5Employment() {
                 step={0.5}
                 placeholder="e.g. 5"
                 {...register('yearsOfExperience')}
+                aria-invalid={Boolean(errors.yearsOfExperience)}
+                aria-describedby={errors.yearsOfExperience ? 'yearsOfExperience-error' : undefined}
                 className="w-full px-3.5 py-2.5 bg-white border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-700"
               />
               {errors.yearsOfExperience && (
-                <p className="text-xs text-danger-600 font-medium mt-1" role="alert">
+                <p id="yearsOfExperience-error" className="text-xs text-danger-600 font-medium mt-1" role="alert">
                   {errors.yearsOfExperience.message}
                 </p>
               )}
@@ -324,10 +332,12 @@ export function Step5Employment() {
                 type="text"
                 placeholder="e.g. Apex Health Clinic / Sharma Legal"
                 {...register('businessName')}
+                aria-invalid={Boolean(errors.businessName)}
+                aria-describedby={errors.businessName ? 'businessName-error' : undefined}
                 className="w-full px-3.5 py-2.5 bg-white border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-700"
               />
               {errors.businessName && (
-                <p className="text-xs text-danger-600 font-medium mt-1" role="alert">
+                <p id="businessName-error" className="text-xs text-danger-600 font-medium mt-1" role="alert">
                   {errors.businessName.message}
                 </p>
               )}
@@ -341,6 +351,8 @@ export function Step5Employment() {
               <select
                 id="businessType"
                 {...register('businessType')}
+                aria-invalid={Boolean(errors.businessType)}
+                aria-describedby={errors.businessType ? 'businessType-error' : undefined}
                 className="w-full px-3.5 py-2.5 bg-white border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-700"
               >
                 <option value="">Select Profession Category</option>
@@ -353,7 +365,7 @@ export function Step5Employment() {
                 <option value="Other Solo Professional">Other Solo Professional</option>
               </select>
               {errors.businessType && (
-                <p className="text-xs text-danger-600 font-medium mt-1" role="alert">
+                <p id="businessType-error" className="text-xs text-danger-600 font-medium mt-1" role="alert">
                   {errors.businessType.message}
                 </p>
               )}
@@ -365,20 +377,22 @@ export function Step5Employment() {
                 Gross Annual Professional Turnover <span className="text-danger-500">*</span>
               </label>
               <div className="relative">
-                <span className="absolute left-3.5 top-2.5 text-neutral-500 font-bold text-sm">₹</span>
+                <span className="absolute left-3.5 top-2.5 text-neutral-600 font-bold text-sm">₹</span>
                 <input
                   id="annualTurnover"
                   type="number"
                   placeholder="e.g. 1200000"
                   {...register('annualTurnover')}
+                  aria-invalid={Boolean(errors.annualTurnover)}
+                  aria-describedby={errors.annualTurnover ? 'annualTurnover-error' : 'annualTurnover-desc'}
                   className="w-full pl-8 pr-3.5 py-2.5 bg-white border border-neutral-300 rounded-lg text-sm font-bold text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-700"
                 />
               </div>
-              <span className="text-[11px] text-neutral-400 mt-1 block">
+              <span id="annualTurnover-desc" className="text-[11px] text-neutral-600 mt-1 block">
                 Minimum gross professional turnover must be ₹3,00,000 as per latest ITR.
               </span>
               {errors.annualTurnover && (
-                <p className="text-xs text-danger-600 font-medium mt-1" role="alert">
+                <p id="annualTurnover-error" className="text-xs text-danger-600 font-medium mt-1" role="alert">
                   {errors.annualTurnover.message}
                 </p>
               )}
@@ -397,13 +411,15 @@ export function Step5Employment() {
                 step={0.5}
                 placeholder="e.g. 3"
                 {...register('yearsInBusiness')}
+                aria-invalid={Boolean(errors.yearsInBusiness)}
+                aria-describedby={errors.yearsInBusiness ? 'yearsInBusiness-error' : 'yearsInBusiness-desc'}
                 className="w-full px-3.5 py-2.5 bg-white border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-700"
               />
-              <span className="text-[11px] text-neutral-400 mt-1 block">
+              <span id="yearsInBusiness-desc" className="text-[11px] text-neutral-600 mt-1 block">
                 Minimum 2 years continuous professional vintage required.
               </span>
               {errors.yearsInBusiness && (
-                <p className="text-xs text-danger-600 font-medium mt-1" role="alert">
+                <p id="yearsInBusiness-error" className="text-xs text-danger-600 font-medium mt-1" role="alert">
                   {errors.yearsInBusiness.message}
                 </p>
               )}
@@ -415,17 +431,19 @@ export function Step5Employment() {
                 Average Net Monthly Income <span className="text-danger-500">*</span>
               </label>
               <div className="relative">
-                <span className="absolute left-3.5 top-2.5 text-neutral-500 font-bold text-sm">₹</span>
+                <span className="absolute left-3.5 top-2.5 text-neutral-600 font-bold text-sm">₹</span>
                 <input
                   id="monthlyIncome"
                   type="number"
                   placeholder="e.g. 75000"
                   {...register('monthlyIncome')}
+                  aria-invalid={Boolean(errors.monthlyIncome)}
+                  aria-describedby={errors.monthlyIncome ? 'monthlyIncome-error' : undefined}
                   className="w-full pl-8 pr-3.5 py-2.5 bg-white border border-neutral-300 rounded-lg text-sm font-bold text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-700"
                 />
               </div>
               {errors.monthlyIncome && (
-                <p className="text-xs text-danger-600 font-medium mt-1" role="alert">
+                <p id="monthlyIncome-error" className="text-xs text-danger-600 font-medium mt-1" role="alert">
                   {errors.monthlyIncome.message}
                 </p>
               )}
@@ -459,10 +477,12 @@ export function Step5Employment() {
                 type="text"
                 placeholder="e.g. Apex Precision Technologies Pvt Ltd"
                 {...register('businessName')}
+                aria-invalid={Boolean(errors.businessName)}
+                aria-describedby={errors.businessName ? 'businessNameOwner-error' : undefined}
                 className="w-full px-3.5 py-2.5 bg-white border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-700"
               />
               {errors.businessName && (
-                <p className="text-xs text-danger-600 font-medium mt-1" role="alert">
+                <p id="businessNameOwner-error" className="text-xs text-danger-600 font-medium mt-1" role="alert">
                   {errors.businessName.message}
                 </p>
               )}
@@ -476,6 +496,8 @@ export function Step5Employment() {
               <select
                 id="businessTypeOwner"
                 {...register('businessType')}
+                aria-invalid={Boolean(errors.businessType)}
+                aria-describedby={errors.businessType ? 'businessTypeOwner-error' : undefined}
                 className="w-full px-3.5 py-2.5 bg-white border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-700"
               >
                 <option value="">Select Constitution</option>
@@ -486,7 +508,7 @@ export function Step5Employment() {
                 <option value="Public Limited Company">Public Limited Company</option>
               </select>
               {errors.businessType && (
-                <p className="text-xs text-danger-600 font-medium mt-1" role="alert">
+                <p id="businessTypeOwner-error" className="text-xs text-danger-600 font-medium mt-1" role="alert">
                   {errors.businessType.message}
                 </p>
               )}
@@ -510,16 +532,18 @@ export function Step5Employment() {
                 maxLength={15}
                 placeholder="e.g. 27ABCDE1234F1Z5"
                 {...register('gstNumber')}
+                aria-invalid={Boolean(errors.gstNumber)}
+                aria-describedby={errors.gstNumber ? 'gstNumber-error' : 'gstNumber-desc'}
                 className={`
                   w-full px-3.5 py-2.5 bg-white border rounded-lg text-sm uppercase font-mono tracking-widest text-neutral-900 focus:outline-none focus:ring-2
                   ${gstResult.isValid ? 'border-success-400 focus:ring-success-500' : errors.gstNumber ? 'border-danger-400 focus:ring-danger-500' : 'border-neutral-300 focus:ring-primary-700'}
                 `}
               />
-              <span className="text-[11px] text-neutral-400 block">
+              <span id="gstNumber-desc" className="text-[11px] text-neutral-600 block">
                 15-character format: 2-digit State code + 10-digit PAN + entity code + &apos;Z&apos; + check digit.
               </span>
               {errors.gstNumber && (
-                <p className="text-xs text-danger-600 font-medium" role="alert">
+                <p id="gstNumber-error" className="text-xs text-danger-600 font-medium" role="alert">
                   {errors.gstNumber.message}
                 </p>
               )}
@@ -535,10 +559,12 @@ export function Step5Employment() {
                 type="text"
                 placeholder="Plot / Survey No., Industrial Area, City, State, PIN"
                 {...register('businessAddress')}
+                aria-invalid={Boolean(errors.businessAddress)}
+                aria-describedby={errors.businessAddress ? 'businessAddress-error' : undefined}
                 className="w-full px-3.5 py-2.5 bg-white border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-700"
               />
               {errors.businessAddress && (
-                <p className="text-xs text-danger-600 font-medium mt-1" role="alert">
+                <p id="businessAddress-error" className="text-xs text-danger-600 font-medium mt-1" role="alert">
                   {errors.businessAddress.message}
                 </p>
               )}
@@ -550,17 +576,19 @@ export function Step5Employment() {
                 Annual Audited Turnover <span className="text-danger-500">*</span>
               </label>
               <div className="relative">
-                <span className="absolute left-3.5 top-2.5 text-neutral-500 font-bold text-sm">₹</span>
+                <span className="absolute left-3.5 top-2.5 text-neutral-600 font-bold text-sm">₹</span>
                 <input
                   id="annualTurnoverOwner"
                   type="number"
                   placeholder="e.g. 5000000"
                   {...register('annualTurnover')}
+                  aria-invalid={Boolean(errors.annualTurnover)}
+                  aria-describedby={errors.annualTurnover ? 'annualTurnoverOwner-error' : undefined}
                   className="w-full pl-8 pr-3.5 py-2.5 bg-white border border-neutral-300 rounded-lg text-sm font-bold text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-700"
                 />
               </div>
               {errors.annualTurnover && (
-                <p className="text-xs text-danger-600 font-medium mt-1" role="alert">
+                <p id="annualTurnoverOwner-error" className="text-xs text-danger-600 font-medium mt-1" role="alert">
                   {errors.annualTurnover.message}
                 </p>
               )}
@@ -579,10 +607,12 @@ export function Step5Employment() {
                 step={0.5}
                 placeholder="e.g. 4"
                 {...register('yearsInBusiness')}
+                aria-invalid={Boolean(errors.yearsInBusiness)}
+                aria-describedby={errors.yearsInBusiness ? 'yearsInBusinessOwner-error' : undefined}
                 className="w-full px-3.5 py-2.5 bg-white border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-700"
               />
               {errors.yearsInBusiness && (
-                <p className="text-xs text-danger-600 font-medium mt-1" role="alert">
+                <p id="yearsInBusinessOwner-error" className="text-xs text-danger-600 font-medium mt-1" role="alert">
                   {errors.yearsInBusiness.message}
                 </p>
               )}
@@ -594,17 +624,19 @@ export function Step5Employment() {
                 Monthly Net Drawings / Income <span className="text-danger-500">*</span>
               </label>
               <div className="relative">
-                <span className="absolute left-3.5 top-2.5 text-neutral-500 font-bold text-sm">₹</span>
+                <span className="absolute left-3.5 top-2.5 text-neutral-600 font-bold text-sm">₹</span>
                 <input
                   id="monthlyIncomeOwner"
                   type="number"
                   placeholder="e.g. 150000"
                   {...register('monthlyIncome')}
+                  aria-invalid={Boolean(errors.monthlyIncome)}
+                  aria-describedby={errors.monthlyIncome ? 'monthlyIncomeOwner-error' : undefined}
                   className="w-full pl-8 pr-3.5 py-2.5 bg-white border border-neutral-300 rounded-lg text-sm font-bold text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-700"
                 />
               </div>
               {errors.monthlyIncome && (
-                <p className="text-xs text-danger-600 font-medium mt-1" role="alert">
+                <p id="monthlyIncomeOwner-error" className="text-xs text-danger-600 font-medium mt-1" role="alert">
                   {errors.monthlyIncome.message}
                 </p>
               )}

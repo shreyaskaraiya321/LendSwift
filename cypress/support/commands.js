@@ -1,6 +1,60 @@
 // ***********************************************************
-// LendSwift Custom Cypress Commands
+// LendSwift Custom Cypress Commands & Accessibility Testing
 // ***********************************************************
+
+/**
+ * Injects axe-core runtime into the browser window for automated accessibility audits
+ */
+Cypress.Commands.add('injectAxe', () => {
+  cy.readFile('node_modules/axe-core/axe.min.js').then((axeScript) => {
+    cy.window({ log: false }).then((win) => {
+      win.eval(axeScript);
+    });
+  });
+});
+
+/**
+ * Runs axe accessibility checks against the active DOM context
+ * @param {string|Element} [context]
+ * @param {Object} [options]
+ * @param {Function} [violationCallback]
+ * @param {boolean} [skipFailures]
+ */
+Cypress.Commands.add('checkA11y', (context, options, violationCallback, skipFailures = false) => {
+  cy.window({ log: false })
+    .then((win) => {
+      if (!win.axe) {
+        throw new Error('Axe not injected! Call cy.injectAxe() first.');
+      }
+      return win.axe.run(context || win.document, options || {
+        runOnly: {
+          type: 'tag',
+          values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'best-practice'],
+        },
+      });
+    })
+    .then(({ violations }) => {
+      if (violations.length) {
+        if (violationCallback) {
+          violationCallback(violations);
+        }
+        Cypress.log({
+          name: 'a11y violation',
+          message: `${violations.length} accessibility violation${violations.length === 1 ? '' : 's'} detected`,
+          consoleProps: () => ({ violations }),
+        });
+        if (!skipFailures) {
+          const formatted = violations.map(({ id, impact, description, nodes }) => ({
+            id,
+            impact,
+            description,
+            nodes: nodes.length,
+          }));
+          assert.fail(`${violations.length} accessibility violation(s) detected: ${JSON.stringify(formatted, null, 2)}`);
+        }
+      }
+    });
+});
 
 /**
  * Step 1: Select Loan Category & Loan Terms

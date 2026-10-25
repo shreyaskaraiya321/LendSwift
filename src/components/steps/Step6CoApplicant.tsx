@@ -131,13 +131,15 @@ export function Step6CoApplicant() {
               type="text"
               placeholder="As per Government PAN Card"
               {...register('coApplicantName')}
+              aria-invalid={Boolean(errors.coApplicantName)}
+              aria-describedby={errors.coApplicantName ? 'coApplicantName-error' : 'coApplicantName-desc'}
               className="w-full px-3.5 py-2.5 bg-white border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-700"
             />
-            <span className="text-[11px] text-neutral-400 mt-1 block">
+            <span id="coApplicantName-desc" className="text-[11px] text-neutral-600 mt-1 block">
               Must match exact legal name on co-applicant PAN card.
             </span>
             {errors.coApplicantName && (
-              <p className="text-xs text-danger-600 font-medium mt-1" role="alert">
+              <p id="coApplicantName-error" className="text-xs text-danger-600 font-medium mt-1" role="alert">
                 {errors.coApplicantName.message}
               </p>
             )}
@@ -158,6 +160,8 @@ export function Step6CoApplicant() {
             <select
               id="relationship"
               {...register('relationship')}
+              aria-invalid={Boolean(errors.relationship)}
+              aria-describedby={errors.relationship ? 'relationship-error' : undefined}
               className="w-full px-3.5 py-2.5 bg-white border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-700"
             >
               <option value="">Select Relationship</option>
@@ -167,7 +171,7 @@ export function Step6CoApplicant() {
               <option value="Business Partner">Business Partner / Co-Director</option>
             </select>
             {errors.relationship && (
-              <p className="text-xs text-danger-600 font-medium mt-1" role="alert">
+              <p id="relationship-error" className="text-xs text-danger-600 font-medium mt-1" role="alert">
                 {errors.relationship.message}
               </p>
             )}
@@ -180,7 +184,7 @@ export function Step6CoApplicant() {
                 <label htmlFor="coApplicantPan" className="text-xs font-bold uppercase tracking-wider text-neutral-700 block">
                   Co-Applicant PAN Number <span className="text-danger-500">*</span>
                 </label>
-                <span className="text-xs text-neutral-500">
+                <span id="coApplicantPan-desc" className="text-xs text-neutral-600">
                   Runs real-time NSDL format and entity check on blur.
                 </span>
               </div>
@@ -217,25 +221,26 @@ export function Step6CoApplicant() {
                 `}
                 aria-label="Co-Applicant PAN Number"
                 aria-invalid={Boolean(panError || errors.coApplicantPan)}
+                aria-describedby={(panError || errors.coApplicantPan) ? 'coApplicantPan-error' : 'coApplicantPan-desc'}
               />
 
               <button
                 type="button"
                 onClick={() => setShowPan(!showPan)}
                 aria-label={showPan ? 'Mask PAN digits' : 'Show PAN digits'}
-                className="absolute right-3 top-2.5 text-xs text-neutral-500 hover:text-neutral-800 font-semibold focus:outline-none"
+                className="absolute right-3 top-2.5 text-xs text-neutral-600 hover:text-neutral-900 font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-700 rounded px-1"
               >
                 {showPan ? 'Mask' : 'Show'}
               </button>
             </div>
 
             {panError && (
-              <p className="text-xs text-danger-600 font-medium mt-1" role="alert">
+              <p id="coApplicantPan-error" className="text-xs text-danger-600 font-medium mt-1" role="alert">
                 {panError}
               </p>
             )}
             {!panError && errors.coApplicantPan && (
-              <p className="text-xs text-danger-600 font-medium mt-1" role="alert">
+              <p id="coApplicantPan-error" className="text-xs text-danger-600 font-medium mt-1" role="alert">
                 {errors.coApplicantPan.message}
               </p>
             )}
@@ -247,20 +252,22 @@ export function Step6CoApplicant() {
               Co-Applicant Verifiable Monthly In-Hand Income <span className="text-danger-500">*</span>
             </label>
             <div className="relative max-w-md">
-              <span className="absolute left-3.5 top-2.5 text-neutral-500 font-bold text-sm">₹</span>
+              <span className="absolute left-3.5 top-2.5 text-neutral-600 font-bold text-sm">₹</span>
               <input
                 id="coApplicantIncome"
                 type="number"
                 placeholder="e.g. 60000"
                 {...register('coApplicantIncome')}
+                aria-invalid={Boolean(errors.coApplicantIncome)}
+                aria-describedby={errors.coApplicantIncome ? 'coApplicantIncome-error' : 'coApplicantIncome-desc'}
                 className="w-full pl-8 pr-3.5 py-2.5 bg-white border border-neutral-300 rounded-lg text-sm font-bold text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-700"
               />
             </div>
-            <span className="text-[11px] text-neutral-400 mt-1 block">
+            <span id="coApplicantIncome-desc" className="text-[11px] text-neutral-600 mt-1 block">
               Income will be factored into overall FOIR affordability checks.
             </span>
             {errors.coApplicantIncome && (
-              <p className="text-xs text-danger-600 font-medium mt-1" role="alert">
+              <p id="coApplicantIncome-error" className="text-xs text-danger-600 font-medium mt-1" role="alert">
                 {errors.coApplicantIncome.message}
               </p>
             )}
@@ -272,15 +279,18 @@ export function Step6CoApplicant() {
           <label className="flex items-start gap-3 cursor-pointer">
             <input
               type="checkbox"
+              id="coApplicantConsent"
               {...register('coApplicantConsent')}
-              className="mt-1 w-4 h-4 text-primary-800 border-neutral-300 rounded focus:ring-primary-700 accent-primary-800 cursor-pointer"
+              aria-invalid={Boolean(errors.coApplicantConsent)}
+              aria-describedby={errors.coApplicantConsent ? 'coApplicantConsent-error' : undefined}
+              className="mt-1 w-4 h-4 text-primary-800 border-neutral-300 rounded focus:ring-primary-700 accent-primary-800 cursor-pointer focus-visible:ring-2 focus-visible:ring-primary-700"
             />
             <span className="text-xs text-neutral-700 leading-relaxed select-none">
               I, as the co-applicant / legal guarantor, hereby give my voluntary statutory consent to LendSwift Financial Services (RBI-registered NBFC-ICC) and its lending partners to fetch my credit bureau history (CIBIL/Experian), authenticate my PAN, and execute digital underwriting checks under the RBI Master Directions on Digital Lending. <span className="text-danger-500 font-bold">*</span>
             </span>
           </label>
           {errors.coApplicantConsent && (
-            <p className="text-xs text-danger-600 font-medium mt-2 pl-7" role="alert">
+            <p id="coApplicantConsent-error" className="text-xs text-danger-600 font-medium mt-2 pl-7" role="alert">
               {errors.coApplicantConsent.message}
             </p>
           )}

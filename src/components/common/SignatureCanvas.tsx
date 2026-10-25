@@ -67,7 +67,7 @@ export function SignatureCanvas({
           <span id="signature-canvas-label" className="text-xs font-bold uppercase tracking-wider text-neutral-700 block">
             {label} {required && <span className="text-danger-500">*</span>}
           </span>
-          <span className="text-[11px] text-neutral-400 block mt-0.5">{description}</span>
+          <span className="text-[11px] text-neutral-600 block mt-0.5">{description}</span>
         </div>
 
         <div className="flex items-center gap-2">
@@ -84,7 +84,7 @@ export function SignatureCanvas({
           <button
             type="button"
             onClick={handleClear}
-            className="text-xs text-neutral-500 hover:text-danger-600 font-semibold px-2 py-1 rounded hover:bg-neutral-100 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-700"
+            className="text-xs text-neutral-700 hover:text-danger-600 font-semibold px-2 py-1 rounded hover:bg-neutral-100 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-700"
           >
             Clear Signature
           </button>
@@ -111,8 +111,8 @@ export function SignatureCanvas({
 
         {/* Signing Guide Watermark Line */}
         <div className="absolute bottom-6 left-6 right-6 pointer-events-none border-b border-dashed border-neutral-300/80 flex justify-between items-end pb-1">
-          <span className="text-[10px] text-neutral-400 uppercase tracking-widest font-mono">Sign on the line</span>
-          <span className="text-[10px] text-neutral-300 font-mono">LendSwift e-Sign</span>
+          <span className="text-[10px] text-neutral-500 uppercase tracking-widest font-mono">Sign on the line</span>
+          <span className="text-[10px] text-neutral-400 font-mono">LendSwift e-Sign</span>
         </div>
       </div>
 

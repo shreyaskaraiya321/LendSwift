@@ -85,7 +85,7 @@ export function ProgressBar({
                 aria-current={isActive ? 'step' : undefined}
                 aria-label={`Step ${step.stepNumber}: ${step.title} (${statusLabel})`}
                 className={`
-                  group flex flex-col items-center focus:outline-none transition-all duration-200 w-full
+                  group flex flex-col items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-700 focus-visible:ring-offset-2 rounded-lg p-1 transition-all duration-200 w-full
                   ${isClickable && !isSkipped ? 'cursor-pointer' : 'cursor-default'}
                   ${isSkipped ? 'opacity-40' : ''}
                 `}
@@ -100,8 +100,8 @@ export function ProgressBar({
                         : isActive
                         ? 'bg-primary-800 text-white ring-4 ring-primary-100 shadow-sm'
                         : isSkipped
-                        ? 'bg-neutral-50 text-neutral-400 border border-dashed border-neutral-300'
-                        : 'bg-neutral-100 text-neutral-600 border border-neutral-300'
+                        ? 'bg-neutral-50 text-neutral-500 border border-dashed border-neutral-300'
+                        : 'bg-neutral-100 text-neutral-700 border border-neutral-300'
                     }
                   `}
                 >
@@ -120,7 +120,7 @@ export function ProgressBar({
                 <span
                   className={`
                     mt-1 text-[10px] sm:text-[11px] font-semibold leading-tight line-clamp-1
-                    ${isActive ? 'text-primary-800' : isCompleted ? 'text-neutral-800' : 'text-neutral-400'}
+                    ${isActive ? 'text-primary-800' : isCompleted ? 'text-neutral-800' : 'text-neutral-600'}
                   `}
                 >
                   {step.shortTitle}
@@ -128,7 +128,7 @@ export function ProgressBar({
 
                 {/* Skipped Badge */}
                 {isSkipped && (
-                  <span className="text-[9px] text-neutral-400 font-normal">
+                  <span className="text-[9px] text-neutral-500 font-normal">
                     Skipped
                   </span>
                 )}

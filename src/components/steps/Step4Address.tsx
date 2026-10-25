@@ -83,10 +83,12 @@ export function Step4Address() {
             type="text"
             placeholder="e.g. Flat 402, Shivalik Residency, M.G. Road"
             {...register('currentAddressLine1')}
+            aria-invalid={Boolean(errors.currentAddressLine1)}
+            aria-describedby={errors.currentAddressLine1 ? 'currentAddressLine1-error' : undefined}
             className="w-full px-3.5 py-2.5 bg-white border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-700"
           />
           {errors.currentAddressLine1 && (
-            <p className="text-xs text-danger-600 font-medium mt-1" role="alert">
+            <p id="currentAddressLine1-error" className="text-xs text-danger-600 font-medium mt-1" role="alert">
               {errors.currentAddressLine1.message}
             </p>
           )}
@@ -95,7 +97,7 @@ export function Step4Address() {
         {/* Address Line 2 */}
         <div>
           <label htmlFor="currentAddressLine2" className="block text-xs font-bold uppercase tracking-wider text-neutral-700 mb-1.5">
-            Area, Sector, Landmark <span className="text-neutral-400 font-normal">(Optional)</span>
+            Area, Sector, Landmark <span className="text-neutral-500 font-normal">(Optional)</span>
           </label>
           <input
             id="currentAddressLine2"
@@ -126,6 +128,8 @@ export function Step4Address() {
               maxLength={6}
               placeholder="e.g. 110001"
               {...register('pincode')}
+              aria-invalid={Boolean(errors.pincode)}
+              aria-describedby={errors.pincode ? 'pincode-error' : undefined}
               className="w-full px-3.5 py-2.5 bg-white border border-neutral-300 rounded-lg text-sm font-mono tracking-widest text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-700"
             />
             {currentLookup.isServiceable && (
@@ -139,7 +143,7 @@ export function Step4Address() {
               </span>
             )}
             {errors.pincode && (
-              <p className="text-xs text-danger-600 font-medium mt-1" role="alert">
+              <p id="pincode-error" className="text-xs text-danger-600 font-medium mt-1" role="alert">
                 {errors.pincode.message}
               </p>
             )}
@@ -155,10 +159,12 @@ export function Step4Address() {
               type="text"
               placeholder="Auto-filled via PIN"
               {...register('city')}
+              aria-invalid={Boolean(errors.city)}
+              aria-describedby={errors.city ? 'city-error' : undefined}
               className="w-full px-3.5 py-2.5 bg-neutral-50 border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-700"
             />
             {errors.city && (
-              <p className="text-xs text-danger-600 font-medium mt-1" role="alert">
+              <p id="city-error" className="text-xs text-danger-600 font-medium mt-1" role="alert">
                 {errors.city.message}
               </p>
             )}
@@ -174,10 +180,12 @@ export function Step4Address() {
               type="text"
               placeholder="Auto-filled via PIN"
               {...register('state')}
+              aria-invalid={Boolean(errors.state)}
+              aria-describedby={errors.state ? 'state-error' : undefined}
               className="w-full px-3.5 py-2.5 bg-neutral-50 border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-700"
             />
             {errors.state && (
-              <p className="text-xs text-danger-600 font-medium mt-1" role="alert">
+              <p id="state-error" className="text-xs text-danger-600 font-medium mt-1" role="alert">
                 {errors.state.message}
               </p>
             )}
@@ -200,6 +208,8 @@ export function Step4Address() {
             <select
               id="residenceType"
               {...register('residenceType')}
+              aria-invalid={Boolean(errors.residenceType)}
+              aria-describedby={errors.residenceType ? 'residenceType-error' : undefined}
               className="w-full px-3.5 py-2.5 bg-white border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-700"
             >
               <option value="Owned">Owned (Self or Spouse)</option>
@@ -208,7 +218,7 @@ export function Step4Address() {
               <option value="Company">Company Provided Quarter</option>
             </select>
             {errors.residenceType && (
-              <p className="text-xs text-danger-600 font-medium mt-1" role="alert">
+              <p id="residenceType-error" className="text-xs text-danger-600 font-medium mt-1" role="alert">
                 {errors.residenceType.message}
               </p>
             )}
@@ -226,10 +236,12 @@ export function Step4Address() {
               max={100}
               step={0.5}
               {...register('yearsAtAddress')}
+              aria-invalid={Boolean(errors.yearsAtAddress)}
+              aria-describedby={errors.yearsAtAddress ? 'yearsAtAddress-error' : undefined}
               className="w-full px-3.5 py-2.5 bg-white border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-700"
             />
             {errors.yearsAtAddress && (
-              <p className="text-xs text-danger-600 font-medium mt-1" role="alert">
+              <p id="yearsAtAddress-error" className="text-xs text-danger-600 font-medium mt-1" role="alert">
                 {errors.yearsAtAddress.message}
               </p>
             )}
@@ -249,14 +261,16 @@ export function Step4Address() {
                 type="number"
                 placeholder="e.g. 15000"
                 {...register('monthlyRentAmount')}
+                aria-invalid={Boolean(errors.monthlyRentAmount)}
+                aria-describedby={errors.monthlyRentAmount ? 'monthlyRentAmount-error' : 'monthlyRentAmount-desc'}
                 className="w-full pl-7 pr-3 py-2 bg-white border border-neutral-300 rounded-lg font-bold text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-700 text-sm"
               />
             </div>
-            <span className="text-[11px] text-neutral-500 block">
+            <span id="monthlyRentAmount-desc" className="text-[11px] text-neutral-600 block">
               Required for Debt-to-Income / FOIR affordability calculations.
             </span>
             {errors.monthlyRentAmount && (
-              <p className="text-xs text-danger-600 font-medium mt-1" role="alert">
+              <p id="monthlyRentAmount-error" className="text-xs text-danger-600 font-medium mt-1" role="alert">
                 {errors.monthlyRentAmount.message}
               </p>
             )}
@@ -279,13 +293,15 @@ export function Step4Address() {
               type="text"
               placeholder="Full previous address (city, state, PIN)"
               {...register('previousAddressLine')}
+              aria-invalid={Boolean(errors.previousAddressLine)}
+              aria-describedby={errors.previousAddressLine ? 'previousAddressLine-error' : 'previousAddressLine-desc'}
               className="w-full px-3.5 py-2.5 bg-white border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-700"
             />
-            <span className="text-[11px] text-neutral-500 block">
+            <span id="previousAddressLine-desc" className="text-[11px] text-neutral-600 block">
               Mandated by RBI underwriting criteria when tenure at current home is under 12 months.
             </span>
             {errors.previousAddressLine && (
-              <p className="text-xs text-danger-600 font-medium mt-1" role="alert">
+              <p id="previousAddressLine-error" className="text-xs text-danger-600 font-medium mt-1" role="alert">
                 {errors.previousAddressLine.message}
               </p>
             )}

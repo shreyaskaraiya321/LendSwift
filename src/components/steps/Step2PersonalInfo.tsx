@@ -173,10 +173,12 @@ export function Step2PersonalInfo() {
             type="text"
             placeholder="e.g. RAJESH KUMAR SHARMA"
             {...register('fullName')}
+            aria-invalid={Boolean(errors.fullName)}
+            aria-describedby={errors.fullName ? 'fullName-error' : undefined}
             className="w-full px-3.5 py-2.5 bg-white border border-neutral-300 rounded-lg text-sm text-neutral-900 uppercase font-semibold focus:outline-none focus:ring-2 focus:ring-primary-700"
           />
           {errors.fullName && (
-            <p className="text-xs text-danger-600 mt-1 font-medium" role="alert">
+            <p id="fullName-error" className="text-xs text-danger-600 mt-1 font-medium" role="alert">
               {errors.fullName.message}
             </p>
           )}
@@ -204,13 +206,15 @@ export function Step2PersonalInfo() {
             min={minDateStr}
             max={maxDateStr}
             {...register('dob')}
+            aria-invalid={Boolean(errors.dob)}
+            aria-describedby={errors.dob ? 'dob-error' : 'dob-helper'}
             className="w-full px-3.5 py-2.5 bg-white border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-700"
           />
-          <span className="text-[11px] text-neutral-400 mt-1 block">
+          <span id="dob-helper" className="text-[11px] text-neutral-600 mt-1 block">
             Eligibility: 21 to 65 years at time of application.
           </span>
           {errors.dob && (
-            <p className="text-xs text-danger-600 mt-1 font-medium" role="alert">
+            <p id="dob-error" className="text-xs text-danger-600 mt-1 font-medium" role="alert">
               {errors.dob.message}
             </p>
           )}
@@ -227,6 +231,8 @@ export function Step2PersonalInfo() {
           <select
             id="gender"
             {...register('gender')}
+            aria-invalid={Boolean(errors.gender)}
+            aria-describedby={errors.gender ? 'gender-error' : undefined}
             className="w-full px-3.5 py-2.5 bg-white border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-700"
           >
             <option value="male">Male</option>
@@ -249,6 +255,8 @@ export function Step2PersonalInfo() {
           <select
             id="maritalStatus"
             {...register('maritalStatus')}
+            aria-invalid={Boolean(errors.maritalStatus)}
+            aria-describedby={errors.maritalStatus ? 'maritalStatus-error' : undefined}
             className="w-full px-3.5 py-2.5 bg-white border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-700"
           >
             <option value="single">Single / Unmarried</option>
@@ -257,7 +265,7 @@ export function Step2PersonalInfo() {
             <option value="widowed">Widowed</option>
           </select>
           {errors.maritalStatus && (
-            <p className="text-xs text-danger-600 mt-1 font-medium" role="alert">
+            <p id="maritalStatus-error" className="text-xs text-danger-600 mt-1 font-medium" role="alert">
               {errors.maritalStatus.message}
             </p>
           )}
@@ -275,10 +283,12 @@ export function Step2PersonalInfo() {
             type="text"
             placeholder="As per Government ID"
             {...register('fatherName')}
+            aria-invalid={Boolean(errors.fatherName)}
+            aria-describedby={errors.fatherName ? 'fatherName-error' : undefined}
             className="w-full px-3.5 py-2.5 bg-white border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-700"
           />
           {errors.fatherName && (
-            <p className="text-xs text-danger-600 mt-1 font-medium" role="alert">
+            <p id="fatherName-error" className="text-xs text-danger-600 mt-1 font-medium" role="alert">
               {errors.fatherName.message}
             </p>
           )}
@@ -293,10 +303,12 @@ export function Step2PersonalInfo() {
             type="text"
             placeholder="As per Government ID"
             {...register('motherName')}
+            aria-invalid={Boolean(errors.motherName)}
+            aria-describedby={errors.motherName ? 'motherName-error' : undefined}
             className="w-full px-3.5 py-2.5 bg-white border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-700"
           />
           {errors.motherName && (
-            <p className="text-xs text-danger-600 mt-1 font-medium" role="alert">
+            <p id="motherName-error" className="text-xs text-danger-600 mt-1 font-medium" role="alert">
               {errors.motherName.message}
             </p>
           )}
@@ -344,6 +356,8 @@ export function Step2PersonalInfo() {
             placeholder="9876543210"
             value={mobileNumber}
             onChange={handleMobileChange}
+            aria-invalid={Boolean(errors.mobileNumber)}
+            aria-describedby={errors.mobileNumber ? 'mobileNumber-error' : undefined}
             className="w-full pl-12 pr-4 py-2.5 bg-white border border-neutral-300 rounded-lg text-sm font-semibold tracking-wider text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-700"
           />
         </div>
@@ -382,7 +396,7 @@ export function Step2PersonalInfo() {
         )}
 
         {errors.mobileNumber && (
-          <p className="text-xs text-danger-600 font-medium" role="alert">
+          <p id="mobileNumber-error" className="text-xs text-danger-600 font-medium" role="alert">
             {errors.mobileNumber.message}
           </p>
         )}
@@ -424,6 +438,8 @@ export function Step2PersonalInfo() {
           placeholder="rajesh.sharma@example.com"
           value={email}
           onChange={handleEmailChange}
+          aria-invalid={Boolean(errors.email)}
+          aria-describedby={errors.email ? 'email-error' : undefined}
           className="w-full px-3.5 py-2.5 bg-white border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-700"
         />
 
@@ -461,7 +477,7 @@ export function Step2PersonalInfo() {
         )}
 
         {errors.email && (
-          <p className="text-xs text-danger-600 font-medium" role="alert">
+          <p id="email-error" className="text-xs text-danger-600 font-medium" role="alert">
             {errors.email.message}
           </p>
         )}
@@ -470,7 +486,7 @@ export function Step2PersonalInfo() {
       {/* 6. Alternate Mobile Number (Optional, must differ from primary) */}
       <div>
         <label htmlFor="alternateMobile" className="block text-xs font-bold uppercase tracking-wider text-neutral-700 mb-1.5">
-          Alternate Contact Number <span className="text-neutral-400 font-normal">(Optional)</span>
+          Alternate Contact Number <span className="text-neutral-500 font-normal">(Optional)</span>
         </label>
         <div className="relative">
           <span className="absolute left-3 top-2.5 text-neutral-500 font-semibold text-sm">
@@ -487,14 +503,16 @@ export function Step2PersonalInfo() {
                 shouldValidate: true,
               })
             }
+            aria-invalid={Boolean(errors.alternateMobile)}
+            aria-describedby={errors.alternateMobile ? 'alternateMobile-error' : 'alternateMobile-desc'}
             className="w-full pl-12 pr-4 py-2.5 bg-white border border-neutral-300 rounded-lg text-sm font-semibold tracking-wider text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-700"
           />
         </div>
-        <span className="text-[11px] text-neutral-500 mt-1 block">
+        <span id="alternateMobile-desc" className="text-[11px] text-neutral-600 mt-1 block">
           Used solely for backup loan servicing alerts. Must differ from primary mobile.
         </span>
         {errors.alternateMobile && (
-          <p className="text-xs text-danger-600 mt-1 font-medium" role="alert">
+          <p id="alternateMobile-error" className="text-xs text-danger-600 mt-1 font-medium" role="alert">
             {errors.alternateMobile.message}
           </p>
         )}

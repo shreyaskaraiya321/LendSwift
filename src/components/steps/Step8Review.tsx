@@ -391,23 +391,23 @@ export function Step8Review({ onEditStep, onFinalSubmit }: Step8ReviewProps) {
           {openSections.step1 && (
             <div className="p-4 pt-0 border-t border-neutral-100 text-xs grid grid-cols-2 sm:grid-cols-3 gap-3">
               <div>
-                <span className="text-neutral-400 block">Loan Category:</span>
+                <span className="text-neutral-600 font-medium block">Loan Category:</span>
                 <strong className="text-neutral-900">{loanType} Loan</strong>
               </div>
               <div>
-                <span className="text-neutral-400 block">Loan Amount:</span>
+                <span className="text-neutral-600 font-medium block">Loan Amount:</span>
                 <strong className="text-neutral-900">{formatIndianCurrency(loanAmount)}</strong>
               </div>
               <div>
-                <span className="text-neutral-400 block">Repayment Tenure:</span>
+                <span className="text-neutral-600 font-medium block">Repayment Tenure:</span>
                 <strong className="text-neutral-900">{tenureMonths} Months</strong>
               </div>
               <div>
-                <span className="text-neutral-400 block">Loan Purpose:</span>
+                <span className="text-neutral-600 font-medium block">Loan Purpose:</span>
                 <strong className="text-neutral-900">{formData.loanPurpose || 'General Needs'}</strong>
               </div>
               <div>
-                <span className="text-neutral-400 block">Referral Code:</span>
+                <span className="text-neutral-600 font-medium block">Referral Code:</span>
                 <strong className="text-neutral-900">{formData.referralCode || 'None'}</strong>
               </div>
             </div>
@@ -454,27 +454,27 @@ export function Step8Review({ onEditStep, onFinalSubmit }: Step8ReviewProps) {
           {openSections.step2 && (
             <div className="p-4 pt-0 border-t border-neutral-100 text-xs grid grid-cols-2 sm:grid-cols-3 gap-3">
               <div>
-                <span className="text-neutral-400 block">Full Legal Name:</span>
+                <span className="text-neutral-600 font-medium block">Full Legal Name:</span>
                 <strong className="text-neutral-900">{formData.fullName}</strong>
               </div>
               <div>
-                <span className="text-neutral-400 block">Date of Birth:</span>
+                <span className="text-neutral-600 font-medium block">Date of Birth:</span>
                 <strong className="text-neutral-900">{formatDateIndian(formData.dob || formData.dateOfBirth)}</strong>
               </div>
               <div>
-                <span className="text-neutral-400 block">Gender & Marital Status:</span>
+                <span className="text-neutral-600 font-medium block">Gender & Marital Status:</span>
                 <strong className="text-neutral-900 capitalize">{formData.gender} &bull; {formData.maritalStatus}</strong>
               </div>
               <div>
-                <span className="text-neutral-400 block">Primary Mobile:</span>
+                <span className="text-neutral-600 font-medium block">Primary Mobile:</span>
                 <strong className="text-neutral-900">{formatMobile(formData.mobileNumber)}</strong>
               </div>
               <div>
-                <span className="text-neutral-400 block">Email Address:</span>
+                <span className="text-neutral-600 font-medium block">Email Address:</span>
                 <strong className="text-neutral-900">{formData.email}</strong>
               </div>
               <div>
-                <span className="text-neutral-400 block">Parents&apos; Names:</span>
+                <span className="text-neutral-600 font-medium block">Parents&apos; Names:</span>
                 <strong className="text-neutral-900">{formData.fatherName || '—'} / {formData.motherName || '—'}</strong>
               </div>
             </div>
@@ -521,21 +521,21 @@ export function Step8Review({ onEditStep, onFinalSubmit }: Step8ReviewProps) {
           {openSections.step3 && (
             <div className="p-4 pt-0 border-t border-neutral-100 text-xs grid grid-cols-2 sm:grid-cols-3 gap-3">
               <div>
-                <span className="text-neutral-400 block">PAN Card Number:</span>
+                <span className="text-neutral-600 font-medium block">PAN Card Number:</span>
                 <div className="flex items-center gap-2 mt-0.5">
                   <strong className="text-neutral-900">{formatPan(formData.panNumber, true)}</strong>
                   {formData.isPanVerified && <Badge variant="success" size="sm">Verified</Badge>}
                 </div>
               </div>
               <div>
-                <span className="text-neutral-400 block">Aadhaar (UIDAI):</span>
+                <span className="text-neutral-600 font-medium block">Aadhaar (UIDAI):</span>
                 <div className="flex items-center gap-2 mt-0.5">
                   <strong className="text-neutral-900">{formatAadhaar(formData.aadhaarNumber, true)}</strong>
                   {formData.isAadhaarVerified && <Badge variant="success" size="sm">Verhoeff Valid</Badge>}
                 </div>
               </div>
               <div>
-                <span className="text-neutral-400 block">Secondary ID:</span>
+                <span className="text-neutral-600 font-medium block">Secondary ID:</span>
                 <strong className="text-neutral-900">{formData.passportNumber || formData.voterId || 'None required'}</strong>
               </div>
             </div>
@@ -582,18 +582,18 @@ export function Step8Review({ onEditStep, onFinalSubmit }: Step8ReviewProps) {
           {openSections.step4 && (
             <div className="p-4 pt-0 border-t border-neutral-100 text-xs grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <span className="text-neutral-400 block">Current Address:</span>
+                <span className="text-neutral-600 font-medium block">Current Address:</span>
                 <strong className="text-neutral-900">
                   {formData.currentAddressLine1 || formData.currentAddress?.line1}
                   {formData.currentAddressLine2 ? `, ${formData.currentAddressLine2}` : ''}
                   , {formData.city || formData.currentAddress?.city}, {formData.state || formData.currentAddress?.state} - {formData.pincode || formData.currentAddress?.pincode}
                 </strong>
-                <span className="text-neutral-500 block mt-0.5">
+                <span className="text-neutral-600 block mt-0.5">
                   Type: {formData.residenceType} &bull; Stayed: {formData.yearsAtAddress || formData.currentAddress?.yearsAtCurrentAddress} Years
                 </span>
               </div>
               <div>
-                <span className="text-neutral-400 block">Permanent Address:</span>
+                <span className="text-neutral-600 font-medium block">Permanent Address:</span>
                 <strong className="text-neutral-900">
                   {formData.sameAsPermanent || formData.isPermanentSameAsCurrent
                     ? 'Same as Current Address'
@@ -644,26 +644,26 @@ export function Step8Review({ onEditStep, onFinalSubmit }: Step8ReviewProps) {
           {openSections.step5 && (
             <div className="p-4 pt-0 border-t border-neutral-100 text-xs grid grid-cols-2 sm:grid-cols-3 gap-3">
               <div>
-                <span className="text-neutral-400 block">Employment Type:</span>
+                <span className="text-neutral-600 font-medium block">Employment Type:</span>
                 <strong className="text-neutral-900">{formData.employmentType}</strong>
               </div>
               <div>
-                <span className="text-neutral-400 block">Organization / Business:</span>
+                <span className="text-neutral-600 font-medium block">Organization / Business:</span>
                 <strong className="text-neutral-900">{formData.companyName || formData.businessName || formData.employerName || '—'}</strong>
               </div>
               <div>
-                <span className="text-neutral-400 block">Declared Monthly Earnings:</span>
+                <span className="text-neutral-600 font-medium block">Declared Monthly Earnings:</span>
                 <strong className="text-primary-800 font-bold">{formatIndianCurrency(primaryIncome)} / month</strong>
               </div>
               {formData.designation && (
                 <div>
-                  <span className="text-neutral-400 block">Designation:</span>
+                  <span className="text-neutral-600 font-medium block">Designation:</span>
                   <strong className="text-neutral-900">{formData.designation}</strong>
                 </div>
               )}
               {formData.gstNumber && (
                 <div>
-                  <span className="text-neutral-400 block">GST Number:</span>
+                  <span className="text-neutral-600 font-medium block">GST Number:</span>
                   <strong className="text-neutral-900 font-mono">{formData.gstNumber}</strong>
                 </div>
               )}
@@ -712,19 +712,19 @@ export function Step8Review({ onEditStep, onFinalSubmit }: Step8ReviewProps) {
             {openSections.step6 && (
               <div className="p-4 pt-0 border-t border-neutral-100 text-xs grid grid-cols-2 sm:grid-cols-4 gap-3">
                 <div>
-                  <span className="text-neutral-400 block">Co-Applicant Name:</span>
+                  <span className="text-neutral-600 font-medium block">Co-Applicant Name:</span>
                   <strong className="text-neutral-900">{formData.coApplicantName}</strong>
                 </div>
                 <div>
-                  <span className="text-neutral-400 block">Relationship:</span>
+                  <span className="text-neutral-600 font-medium block">Relationship:</span>
                   <strong className="text-neutral-900">{formData.relationship}</strong>
                 </div>
                 <div>
-                  <span className="text-neutral-400 block">Co-Applicant PAN:</span>
+                  <span className="text-neutral-600 font-medium block">Co-Applicant PAN:</span>
                   <strong className="text-neutral-900">{formatPan(formData.coApplicantPan, true)}</strong>
                 </div>
                 <div>
-                  <span className="text-neutral-400 block">Monthly Income:</span>
+                  <span className="text-neutral-600 font-medium block">Monthly Income:</span>
                   <strong className="text-neutral-900">{formatIndianCurrency(formData.coApplicantIncome)}</strong>
                 </div>
               </div>

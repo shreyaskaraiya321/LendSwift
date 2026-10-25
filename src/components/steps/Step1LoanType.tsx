@@ -223,6 +223,8 @@ export function Step1LoanType() {
               type="text"
               value={currentAmount.toLocaleString('en-IN')}
               onChange={handleAmountInputChange}
+              aria-invalid={Boolean(errors.loanAmount)}
+              aria-describedby={errors.loanAmount ? 'loanAmount-error' : undefined}
               className="w-full pl-7 pr-3 py-2 bg-white border border-neutral-300 rounded-lg font-bold text-neutral-900 text-right focus:outline-none focus:ring-2 focus:ring-primary-700 text-base"
               aria-label="Loan Amount in Rupees"
             />
@@ -246,7 +248,7 @@ export function Step1LoanType() {
             aria-valuetext={formatIndianCurrency(currentAmount)}
             className="w-full h-2 bg-neutral-200 rounded-lg appearance-none cursor-pointer accent-primary-800"
           />
-          <div className="flex justify-between text-[11px] text-neutral-400 font-medium">
+          <div className="flex justify-between text-[11px] text-neutral-600 font-medium">
             <span>{formatIndianCurrency(limits.minAmount)}</span>
             <span className="font-bold text-primary-800">{formatIndianCurrency(currentAmount)}</span>
             <span>{formatIndianCurrency(limits.maxAmount)}</span>
@@ -254,7 +256,7 @@ export function Step1LoanType() {
         </div>
 
         {errors.loanAmount && (
-          <p className="text-xs text-danger-600 font-medium" role="alert">
+          <p id="loanAmount-error" className="text-xs text-danger-600 font-medium" role="alert">
             {errors.loanAmount.message}
           </p>
         )}
@@ -282,6 +284,8 @@ export function Step1LoanType() {
                 step={limits.tenureStep}
                 value={currentTenure}
                 onChange={handleTenureInputChange}
+                aria-invalid={Boolean(errors.loanTenure)}
+                aria-describedby={errors.loanTenure ? 'loanTenure-error' : undefined}
                 className="w-full px-3 py-2 bg-white border border-neutral-300 rounded-lg font-bold text-neutral-900 text-right focus:outline-none focus:ring-2 focus:ring-primary-700 text-base"
                 aria-label="Loan Tenure in Months"
               />
@@ -307,7 +311,7 @@ export function Step1LoanType() {
             aria-valuetext={`${currentTenure} months`}
             className="w-full h-2 bg-neutral-200 rounded-lg appearance-none cursor-pointer accent-primary-800"
           />
-          <div className="flex justify-between text-[11px] text-neutral-400 font-medium">
+          <div className="flex justify-between text-[11px] text-neutral-600 font-medium">
             <span>{limits.minTenure} Mo ({limits.minTenure / 12} Yrs)</span>
             <span className="font-bold text-primary-800">
               {currentTenure} Months ({(currentTenure / 12).toFixed(1)} Years)
@@ -317,7 +321,7 @@ export function Step1LoanType() {
         </div>
 
         {errors.loanTenure && (
-          <p className="text-xs text-danger-600 font-medium" role="alert">
+          <p id="loanTenure-error" className="text-xs text-danger-600 font-medium" role="alert">
             {errors.loanTenure.message}
           </p>
         )}
@@ -333,6 +337,8 @@ export function Step1LoanType() {
           <select
             id="loanPurpose"
             {...register('loanPurpose')}
+            aria-invalid={Boolean(errors.loanPurpose)}
+            aria-describedby={errors.loanPurpose ? 'loanPurpose-error' : undefined}
             className="w-full px-3.5 py-2.5 bg-white border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-700"
           >
             {limits.purposes.map((p) => (
@@ -342,7 +348,7 @@ export function Step1LoanType() {
             ))}
           </select>
           {errors.loanPurpose && (
-            <p className="text-xs text-danger-600 mt-1 font-medium" role="alert">
+            <p id="loanPurpose-error" className="text-xs text-danger-600 mt-1 font-medium" role="alert">
               {errors.loanPurpose.message}
             </p>
           )}

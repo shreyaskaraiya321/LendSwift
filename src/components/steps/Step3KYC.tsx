@@ -208,25 +208,26 @@ export function Step3KYC() {
             `}
             aria-label="PAN Number"
             aria-invalid={Boolean(panError || errors.panNumber)}
+            aria-describedby={panError || errors.panNumber ? 'pan-error' : undefined}
           />
 
           <button
             type="button"
             onClick={() => setShowPan(!showPan)}
             aria-label={showPan ? 'Mask PAN digits' : 'Show PAN digits'}
-            className="absolute right-3 top-2.5 text-xs text-neutral-500 hover:text-neutral-800 font-semibold focus:outline-none"
+            className="absolute right-3 top-2.5 text-xs text-neutral-600 hover:text-neutral-900 font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-700 rounded px-1"
           >
             {showPan ? 'Mask' : 'Show'}
           </button>
         </div>
 
         {panError && (
-          <p className="text-xs text-danger-600 font-medium mt-1" role="alert">
+          <p id="pan-error" className="text-xs text-danger-600 font-medium mt-1" role="alert">
             {panError}
           </p>
         )}
         {!panError && errors.panNumber && (
-          <p className="text-xs text-danger-600 font-medium mt-1" role="alert">
+          <p id="pan-error" className="text-xs text-danger-600 font-medium mt-1" role="alert">
             {errors.panNumber.message}
           </p>
         )}
@@ -276,25 +277,26 @@ export function Step3KYC() {
             `}
             aria-label="12-digit Aadhaar Number"
             aria-invalid={Boolean(aadhaarError || errors.aadhaarNumber)}
+            aria-describedby={aadhaarError || errors.aadhaarNumber ? 'aadhaar-error' : undefined}
           />
 
           <button
             type="button"
             onClick={() => setShowAadhaar(!showAadhaar)}
             aria-label={showAadhaar ? 'Mask Aadhaar digits' : 'Show Aadhaar digits'}
-            className="absolute right-3 top-2.5 text-xs text-neutral-500 hover:text-neutral-800 font-semibold focus:outline-none"
+            className="absolute right-3 top-2.5 text-xs text-neutral-600 hover:text-neutral-900 font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-700 rounded px-1"
           >
             {showAadhaar ? 'Mask' : 'Show'}
           </button>
         </div>
 
         {aadhaarError && (
-          <p className="text-xs text-danger-600 font-medium mt-1" role="alert">
+          <p id="aadhaar-error" className="text-xs text-danger-600 font-medium mt-1" role="alert">
             {aadhaarError}
           </p>
         )}
         {!aadhaarError && errors.aadhaarNumber && (
-          <p className="text-xs text-danger-600 font-medium mt-1" role="alert">
+          <p id="aadhaar-error" className="text-xs text-danger-600 font-medium mt-1" role="alert">
             {errors.aadhaarNumber.message}
           </p>
         )}
@@ -306,6 +308,8 @@ export function Step3KYC() {
           <input
             type="checkbox"
             {...register('aadhaarConsent')}
+            aria-invalid={Boolean(errors.aadhaarConsent)}
+            aria-describedby={errors.aadhaarConsent ? 'aadhaarConsent-error' : undefined}
             className="mt-1 w-4 h-4 text-primary-800 border-neutral-300 rounded focus:ring-primary-700 accent-primary-800 cursor-pointer"
           />
           <span className="text-xs text-neutral-700 leading-relaxed select-none">
@@ -313,7 +317,7 @@ export function Step3KYC() {
           </span>
         </label>
         {errors.aadhaarConsent && (
-          <p className="text-xs text-danger-600 font-medium mt-2 pl-7" role="alert">
+          <p id="aadhaarConsent-error" className="text-xs text-danger-600 font-medium mt-2 pl-7" role="alert">
             {errors.aadhaarConsent.message}
           </p>
         )}
@@ -324,20 +328,22 @@ export function Step3KYC() {
         {/* Voter ID (Optional) */}
         <div>
           <label htmlFor="voterId" className="block text-xs font-bold uppercase tracking-wider text-neutral-700 mb-1.5">
-            Voter ID Number <span className="text-neutral-400 font-normal">(Optional)</span>
+            Voter ID Number <span className="text-neutral-500 font-normal">(Optional)</span>
           </label>
           <input
             id="voterId"
             type="text"
             placeholder="e.g. ABC1234567"
             {...register('voterId')}
+            aria-invalid={Boolean(errors.voterId)}
+            aria-describedby={errors.voterId ? 'voterId-error' : 'voterId-desc'}
             className="w-full px-3.5 py-2.5 bg-white border border-neutral-300 rounded-lg text-sm uppercase font-mono tracking-wider text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-700"
           />
-          <span className="text-[11px] text-neutral-400 mt-1 block">
+          <span id="voterId-desc" className="text-[11px] text-neutral-600 mt-1 block">
             Format: 3 letters followed by 7 numeric digits (EPIC Card).
           </span>
           {errors.voterId && (
-            <p className="text-xs text-danger-600 mt-1 font-medium" role="alert">
+            <p id="voterId-error" className="text-xs text-danger-600 mt-1 font-medium" role="alert">
               {errors.voterId.message}
             </p>
           )}
@@ -351,7 +357,7 @@ export function Step3KYC() {
               {isHomeLoanOver50L ? (
                 <span className="text-danger-500 font-bold">*</span>
               ) : (
-                <span className="text-neutral-400 font-normal">(Optional)</span>
+                <span className="text-neutral-500 font-normal">(Optional)</span>
               )}
             </label>
             {isHomeLoanOver50L && (
@@ -365,18 +371,20 @@ export function Step3KYC() {
             type="text"
             placeholder="e.g. Z1234567"
             {...register('passportNumber')}
+            aria-invalid={Boolean(errors.passportNumber)}
+            aria-describedby={errors.passportNumber ? 'passportNumber-error' : 'passportNumber-desc'}
             className={`
               w-full px-3.5 py-2.5 bg-white border rounded-lg text-sm uppercase font-mono tracking-wider text-neutral-900 focus:outline-none focus:ring-2
               ${isHomeLoanOver50L ? 'border-primary-400 focus:ring-primary-700' : 'border-neutral-300 focus:ring-primary-700'}
             `}
           />
-          <span className="text-[11px] text-neutral-400 mt-1 block">
+          <span id="passportNumber-desc" className="text-[11px] text-neutral-600 mt-1 block">
             {isHomeLoanOver50L
               ? `Required under RBI high-value housing guidelines for ${formatIndianCurrency(loanAmount)}.`
               : 'Format: 1 letter followed by 7 digits (e.g. A1234567).'}
           </span>
           {errors.passportNumber && (
-            <p className="text-xs text-danger-600 mt-1 font-medium" role="alert">
+            <p id="passportNumber-error" className="text-xs text-danger-600 mt-1 font-medium" role="alert">
               {errors.passportNumber.message}
             </p>
           )}

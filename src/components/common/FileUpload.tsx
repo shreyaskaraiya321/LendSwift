@@ -219,7 +219,7 @@ export function FileUpload({
             ${disabled || isProcessing ? 'opacity-50 cursor-not-allowed bg-neutral-100' : ''}
           `}
         >
-          <input {...getInputProps()} />
+          <input {...getInputProps()} aria-label={`Upload file for ${label}`} />
 
           {isProcessing ? (
             <div className="flex flex-col items-center gap-2 py-2">
@@ -241,7 +241,7 @@ export function FileUpload({
                 <p className="text-xs font-semibold text-neutral-800">
                   <span className="text-primary-800 underline">Click to upload</span> or drag and drop
                 </p>
-                <p className="text-[11px] text-neutral-400 mt-0.5">{description}</p>
+                <p className="text-[11px] text-neutral-600 mt-0.5">{description}</p>
               </div>
             </>
           )}
